@@ -1,0 +1,33 @@
+{% extends "index.html" %}
+
+
+{% block content %}
+   <div class="row-fluid" style="margin-top: 200px">
+            <div class="span3" style="margin:0 auto; float:none;">
+                <form class="form-horizontal" method="post" action="{% url 'django.contrib.auth.views.login' %}" >
+                    <div id="login-form">
+                        <div class="control-group">
+                            {% if form.errors %}
+                            <div class="alert alert-error">
+                                <strong>Error</strong> The name and password didn't match.
+                            </div>
+                            {% endif %}
+                            {% csrf_token %}
+                            <div class="input-prepend">
+                                <span class="add-on"><i class="icon-user"></i></span><input type="text" name="username" id="id_username" placeholder="Username" />
+                            </div>
+                        </div>
+                        <div class="input-prepend">
+                            <span class="add-on"><i class="icon-key"></i></span><input type="password" name="password" id="id_password" placeholder="Password" />
+                        </div>
+                        <br>
+                        <div class="input-prepend" style="height:60px;">
+                            <button type="submit" class="btn btn-blue" style="position: relative;top: 50%;">Login</button>
+                        </div>
+                    </div>
+                   <input type="hidden" name="next" value="{{ next }}" />
+               </form>
+           </div>
+   </div>
+
+{% endblock %}

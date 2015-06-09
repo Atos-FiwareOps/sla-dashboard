@@ -1,0 +1,14 @@
+[
+  {
+    "model": "auth.group",
+     "fields": {
+      "name": "CONSUMER"
+    }
+  },
+  {
+    "model": "auth.group",
+     "fields": {
+      "name": "PROVIDER"
+    }
+  }  
+]

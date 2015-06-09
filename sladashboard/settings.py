@@ -1,0 +1,160 @@
+"""
+Django settings for sla-dashboard project.
+
+For more information on this file, see
+https://docs.djangoproject.com/en/1.6/topics/settings/
+
+For the full list of settings and their values, see
+https://docs.djangoproject.com/en/1.6/ref/settings/
+"""
+
+# Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+import os
+BASE_DIR = os.path.dirname(os.path.dirname(__file__))
+
+
+# Quick-start development settings - unsuitable for production
+# See https://docs.djangoproject.com/en/1.6/howto/deployment/checklist/
+
+# SECURITY WARNING: keep the secret key used in production secret!
+SECRET_KEY = '4d!-pv4t#x1%-890!o-04!%5hhd@tha(xafml-2=sm@#=mwov#'
+
+
+TEMPLATE_DEBUG = True
+TEMPLATE_DIRS = [os.path.join(BASE_DIR, 'templates')]
+
+
+ALLOWED_HOSTS = []
+
+AUTHENTICATION_BACKENDS = (
+    'slagui.IdmBackEnd.IdmBackEnd',
+    )
+
+
+# Application definition
+
+INSTALLED_APPS = (
+    'django.contrib.admin',
+    'django.contrib.auth',
+    'django.contrib.contenttypes',
+    'django.contrib.sessions',
+    'django.contrib.messages',
+    'django.contrib.staticfiles',
+    'slagui',
+    'wstore',
+    #'debug_toolbar',
+)
+
+MIDDLEWARE_CLASSES = (
+    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.middleware.common.CommonMiddleware',
+    'django.middleware.csrf.CsrfViewMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
+    'django.middleware.clickjacking.XFrameOptionsMiddleware',
+)
+
+ROOT_URLCONF = 'sladashboard.urls'
+
+WSGI_APPLICATION = 'sladashboard.wsgi.application'
+
+
+# Database
+# https://docs.djangoproject.com/en/1.6/ref/settings/#databases
+
+DATABASES = {
+    'default': {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+        #'NAME': os.path.join(os.path.expanduser('~'), 'db.sqlite3'),
+    }
+}
+
+# Internationalization
+# https://docs.djangoproject.com/en/1.6/topics/i18n/
+
+LANGUAGE_CODE = 'en-us'
+
+TIME_ZONE = 'UTC'
+
+USE_I18N = True
+
+USE_L10N = True
+
+USE_TZ = True
+
+
+# Static files (CSS, JavaScript, Images)
+# https://docs.djangoproject.com/en/1.6/howto/static-files/
+
+STATIC_URL = '/static/'
+
+
+SLA_GUI_URL = 'slagui/'
+
+OILAUTH = False
+PORTALINSTANCE = False
+LOGIN_URL = '/'+SLA_GUI_URL+'login/'
+
+LOGIN_REDIRECT_URL = '/login'
+
+LOGOUT_URL = '/logout/'
+
+IDM_REDIRECT_URL = 'http://localhost:8000/slagui/callbackIdm'
+IDM_CLIENT_ID = '767'
+IDM_LOGIN_STATE = 'test1234567890'
+IDM_URL = 'account.lab.fiware.org'
+IDM_HTTP_TYPE = 'https'
+
+#CLOUD_TOKEN_URL = 'http://cloud.lab.fiware.org:4730/v2.0/tokens'
+CLOUD_TOKEN_URL = 'https://account.lab.fiware.org/oauth2/token'
+
+ERROR_NO_ROLE = 'no_role'
+ERROR_NO_VALID_ROLE = 'No valid roles exist for this organization..'
+
+#DCA_PAAS_URL = 'http://83.235.169.221:2587/dca/servers/user/'
+#if we want to use the name of the user associated with the cloud instances
+#DCA_PAAS_URL = 'http://193.205.211.155/dca/servers/user/'
+#if we want to use the id of the cloud organization (tenantId) associated to the user
+DCA_PAAS_URL = 'http://193.205.211.155/dca/servers/tenant/'
+DCA_NODE_URL = 'http://130.206.84.4:1028/monitoring/regions/NODE/hosts'
+#DCA_GATHER_USER = {'url': 'http://cloud.lab.fiware.org:4730/v2.0/tokens',
+#                         'credentials': '{"auth": {"passwordCredentials": {"username":"sla.fiwareops@gmail.com", "password":"Fiware@2015"}}}'}
+
+DCA_GATHER_USER = 'grant_type=password&username=marketplace.fiwareops@gmail.com&password=Fiware@2015'
+
+FM_VM_URL = 'http://130.206.84.4:1028/monitoring/regions/NODE/vms/'
+
+MARKETPLACE_PUBLISHED_SAAS_URL = 'http://193.205.211.141/api/user_saas_published/'
+MARKETPLACE_REGISTERED_SAAS_URL = 'http://193.205.211.141/api/user_saas_registered/'
+
+CLOUD_URL_KEYSTONE = "http://cloud.lab.fiware.org:4730"
+CLOUD_URL_TOKEN = "/v3/auth/tokens"
+CLOUD_URL_USER = "/v3/users/"
+CLOUD_BODY_KEYSTONE = "{\"auth\": {\"identity\": { \"methods\": [ \"oauth2\" ], \"oauth2\": {\"access_token_id\":\"ACCESS_TOKEN_VALUE\"}}}}"
+
+JSON_HEADER = 'application/json'
+ACCEPT_HEADER = 'Accept'
+#
+# Specific XIFI setup
+#
+
+# SlaManager root url
+SLA_MANAGER_URL="http://127.0.0.1:8080/sla-service-0.1.1-SNAPSHOT"
+SLA_MANAGER_USER="user"
+SLA_MANAGER_PASSWORD="password"
+# Development Internal IPs
+INTERNAL_IPS=("127.0.0.1", "192.168.56.1")
+# SECURITY WARNING: don't run with debug turned on in production!
+DEBUG = True
+
+#Secret data to integrate with the IdM GUI
+SECRET_TOKEN = "767"
+SECRET_KEY = 'd8266ec1300898f60025bb08cbd701b40faf3f767ab64c1c6e703315ee42bfe416bbed90168c2c803f91e29a9dcaf06e52924f9fbb69547ce69bf22762022d4e'
+
+#With the new version of the IdM, we need to introduce different credentials to obtain el token for the DCA and the FM
+#In the future, it will be manage by the IdM and we only need to use one credential to access to all the components of the Federation layer. 
+SECRET_TOKEN_FM = "608"
+SECRET_KEY_FM = '8533e81fc8462bb89d8c249116d7447e8e1c7f40257ebc0f639ae85b9fdca6de95f85d608014cbcda2669071d6b7aef47ad3f6bab732f4ef68c468a734203776'
+SECRET_TOKEN_DCA = "2365cc3afcea4068b784846c6b060edd"
+SECRET_KEY_DCA = 'c2a30cb4c04b437e9dfe3af9038e1de9'

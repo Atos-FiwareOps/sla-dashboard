@@ -1,0 +1,57 @@
+{% load staticfiles %}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <link href="{% static 'sla/bootstrap/css/bootstrap.min.css' %}" type="text/css" rel="stylesheet" media="screen">
+
+    <style>
+        .status-red {
+            background-color: red;
+        }
+        .status-green {
+            background-color: green;
+        }
+        .status-yellow {
+            background-color: yellow;
+        }
+    </style>
+</head>
+<body>
+    <p class="well">{{ now }}</p>
+
+    <div id="agreements">
+
+    {% for a in agreements %}
+        <div>
+            <span class="status-{{a.statusclass}}">{{a.statusclass}}</span>
+            <a data-toggle="collapse" data-parent="#agreements" href="#agreement-{{a.agreementId}}">{{a.context.service}}</a>
+            -
+            <a href="#" data-agreementid="{{a.agreementId}}">Detail</a>
+        </div>
+        <div id="agreement-{{a.agreementId}}" class="collapse">
+            <div>
+            {% for tname,t in a.guaranteeterms.items %}
+                <div>
+                    <span class="status-{{t.statusclass}}">{{t.statusclass}}</span>
+                    {{t.servicelevelobjective.kpiname}}
+                    -
+                    <a href="/violations/{{a.agreementId}}/{{t.name}}">Detail</a>
+                </div>
+            {% endfor %}
+            </div>
+        </div>
+    {% empty %}
+    {% endfor %}
+    </div>
+
+    <script src="http://code.jquery.com/jquery.js"></script>
+    <script src="{% static 'sla/bootstrap/js/bootstrap.min.js' %}"></script>
+    <script>
+        $(document).ready(function() {
+            console.log("consumer_agrements ready");
+        });
+    </script>
+</body>
+</html>
+

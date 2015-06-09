@@ -1,0 +1,11 @@
+This is the README file for slaclient project.
+
+slaclient module is compound by:
+* restclient: REST client to SLA Manager
+* wsag_model: Object models that correspond to the SlaManager xml/json types
+* xmlconverter: Converts from XML (as returned by SlaManager) to wsag_model
+    objects
+* templates: Generates agreements/templates (in xml format) to be submitted
+    to SlaManager.
+* service: Implements a service that receives specifications in json format
+    for agreements, templates and providers, and submit to SlaManager.

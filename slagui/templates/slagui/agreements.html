@@ -1,0 +1,170 @@
+{% extends "index.html" %}
+
+{% block head %}
+    <style>
+        .status-error {
+            color: red;
+        }
+        .status-success {
+            color: green;
+        }
+    </style>
+{% endblock head %}
+
+
+{% block content %}
+
+{% include "slagui/agreements_template.html" %}
+
+{% endblock content %}
+
+{% block end %}
+    <script>
+        $(document).ready(function() {
+         //start
+    var organizations = {{orgs|safe}};
+    var currentOrganization = {{current_organization|safe}};
+    $('.dropdown-submenu').remove();
+
+    // Include switch sesion menu if the user belong to
+    // any organization
+    if (organizations.length > 1) {
+        var ul;
+        var leftMenu = $('<li></li>').addClass('dropdown-submenu pull-left');
+        $('<a></a>').text('Switch session').appendTo(leftMenu);
+        $('<i></i>').addClass('icon-caret-right').appendTo(leftMenu);
+
+        ul = $('<ul></ul>').addClass('dropdown-menu dropdown-menu-header').appendTo(leftMenu);
+
+        for (var i = 0; i < organizations.length; i++) {
+            if (organizations[i].name != currentOrganization.name) {
+                var li = $('<li></li>');
+                var a = $('<a></a>').text(organizations[i].name).attr('data-placement','left').attr('data-toggle', 'tooltip').attr('href', "/slagui?org=" + organizations[i].name);
+                a.appendTo(li);
+
+                if (organizations[i].real_org == "False") {
+                    a.prepend($('<img></img>').attr('src', '/static/oil/img/user.png'));
+                    ul.prepend(li);
+                } else {
+                    a.prepend($('<img></img>').attr('src', '/static/oil/img/group.png'));
+                    ul.append(li);
+                }
+
+            }
+        }
+
+        ul.css('display', 'none');
+        ul.css('position', 'absolute');
+        ul.css('top', '10px');
+        ul.css('right', '157px');
+
+        leftMenu.on('mouseover', function() {
+            ul.css('display', 'block');
+        });
+
+        leftMenu.on('mouseout', function() {
+            ul.css('display', 'none');
+        });
+
+        $('#settings-menu').prepend(leftMenu);
+
+        // Set username
+        if (currentOrganization.real_org == "False") {
+            $('.oil-usr-icon').attr('src', '/static/oil/img/user.png');
+        } else {
+            $('.oil-usr-icon').attr('src', '/static/oil/img/group.png');
+        }
+         $('#oil-usr').text(currentOrganization.name);
+    }
+        //end
+        //end
+            $(".status-success").addClass("icon-ok-sign").attr("title", "Fulfilled")
+            $(".status-error").addClass("icon-remove-sign").attr("title", "Violated")
+            $(".status-non-determined").addClass("icon-exclamation-sign").attr("title", "Non determined")
+
+            $(".icon-plus, .icon-minus").click(function(){ $(this).toggleClass("icon-plus icon-minus")});
+
+            {%if show_form == True %}
+            $('#show-agreement').change(
+                function(){
+                    if ($(this).is(':checked')) {
+                        $("#create-agreement-form").css("visibility", "visible");
+                    }else{
+                        $("#create-agreement-form").css("visibility", "hidden");
+                    }
+                });
+                $('#create-agreement-form').on('submit', function(e) {
+                    if($("#aname").val().length == 0){
+                        alert("Agreement name cant be empty!");
+                        return false;
+                    }
+                    if($("#tempid").val() == "Select"){
+                        alert("Please select a template!")
+                        return false;
+                    }
+                    var g_cons_l= $( "input[name^='consval']" );
+                    console.log(g_cons_l);
+                    e.preventDefault();
+                    $("#grRowNum").val(grRowNum);
+                    $.ajax({
+                      type: "POST",
+                      url: '{% url "create_agreement" %}',
+                      data: $(this).serialize(),
+                      beforeSend: function(xhr, options){
+                          var tsid = $('#tsid').val();
+                          if(!tsid){
+                              alert('Service cant be blank');
+                              xhr.abort();
+                          }
+                          var tempid = $('#tempid').val();
+                          if(tempid == 'Select'){
+                              alert('Service cant be empty!');
+                              xhr.abort();
+                          }
+                      },
+                      success: function(){
+                       window.location.href = "/slagui/agreements?success=success"
+                      },
+                      error: function(xhr, status, error){
+                          //this only works when an exception is thrown with the error
+                          //we've detected that the second line of the message is the error message we're throwing
+                        lines = xhr.responseText.split("\n");
+                        alert(encodeURIComponent(lines[1]));
+                        console.log("Error agreement creation: " + encodeURIComponent(lines[1]));
+                        window.location.href = "/slagui/agreements?success=error";
+                      }
+                    });
+
+                });
+                $('#tempid').append('<option value="Select">Select</option>');
+
+                 $("#tempid").on("change", function(event) {
+                    $.getJSON('/slagui/templatecns/' + $(this).val() + '/detail', function(data){
+                        $('#metric-list').empty();
+                        grRowNum = 0;
+                        rowNum = 0;
+
+                        $.each(data, function(index, e){
+
+                           agrGrAddRow(e.cns, e.cns_val, e.cns_name, e.kpiName, e.t_name, e.t_time, e.service, e.provider);
+                        });
+                });
+                } );
+            {% endif %}
+
+
+            console.log("ready")
+        });
+         function selectService(service){
+                 $("#tsid").val(service);
+                    $.getJSON('{% url "template_list" %}?s=' + $("#tsid").val(), function(data){
+                      $('#tempid').find('option:not(:first)').remove();
+                        $.each(data,function(key, value)
+                        {
+                            $('#tempid').append('<option value=' + value + '>' + key + '</option>');
+                        });
+                });
+                 $('#serviceModalAgreement').modal('toggle');
+            }
+    </script>
+{% endblock end %}

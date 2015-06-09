@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsag:Template xmlns:wsag="http://www.ggf.org/namespaces/ws-agreement"
+                TemplateId="{{data.template_id}}">
+    {% if data.template_name %}<wsag:Name>{{data.template_name}}</wsag:Name>{% endif %}
+
+    <wsag:Context>
+        {% if data.provider %}<wsag:AgreementResponder>{{data.provider}}</wsag:AgreementResponder>{% endif %}
+        <wsag:ServiceProvider>AgreementResponder</wsag:ServiceProvider>
+        {% if data.expiration_time %}<wsag:ExpirationTime>{{data.expiration_time_iso}}</wsag:ExpirationTime>{% endif %}
+        <sla:Service xmlns:sla="http://sla.atos.eu">{{data.service_id}}</sla:Service>
+    </wsag:Context>
+
+    <wsag:Terms>
+        <wsag:All>
+            <wsag:ServiceProperties
+                    wsag:Name="ServiceProperties"
+                    wsag:ServiceName="{{data.service_id}}">
+                <wsag:Variables>
+                {% for property in data.service_properties %}   <wsag:Variable
+                            wsag:Name="{{property.name}}"
+                            wsag:Metric="{{property.metric|default:'xs:double'}}">
+                        <wsag:Location>{{property.location|default:property.name}}</wsag:Location>
+                    </wsag:Variable>
+                {% endfor %}</wsag:Variables>
+            </wsag:ServiceProperties>
+        </wsag:All>
+    </wsag:Terms>
+</wsag:Template>

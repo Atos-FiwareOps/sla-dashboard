@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<wsag:Agreement xmlns:wsag="http://www.ggf.org/namespaces/ws-agreement">
+	<wsag:Name>ExampleAgreement</wsag:Name>
+	<wsag:Context>
+		<wsag:AgreementInitiator>RandomClient</wsag:AgreementInitiator>
+		<wsag:AgreementResponder>Provider01</wsag:AgreementResponder>
+		<!-- The AgreementResponder (in this case) is mandatory if sla is multi 
+			service provider -->
+		<wsag:ServiceProvider>AgreementResponder</wsag:ServiceProvider>
+		<wsag:ExpirationTime>2014-03-07T12:00</wsag:ExpirationTime>
+		<wsag:TemplateId>contract-template-2007-12-04</wsag:TemplateId>
+	</wsag:Context>
+	<wsag:Terms>
+		<wsag:All>
+			<!-- FUNCTIONAL DESCRIPTION -->
+			<!-- <wsag:ServiceDescriptionTerm wsag:Name="SDTName" wsag:ServiceName="ServiceName"> 
+				DSL expression </wsag:ServiceDescriptionTerm> -->
+
+			<!-- OPTIONAL SERVICE REFERENCE -->
+
+			<!-- OPTIONAL SERVICE PROPERTIES : non funcional properties -->
+			<wsag:ServiceProperties wsag:Name="NonFunctional"
+				wsag:ServiceName="ServiceName">
+				<wsag:Variables>
+					<wsag:Variable wsag:Name="ResponseTime" wsag:Metric="xs:double">
+						<wsag:Location>qos:ResponseTime</wsag:Location>
+					</wsag:Variable>
+				</wsag:Variables>
+			</wsag:ServiceProperties>
+			<wsag:GuaranteeTerm wsag:Name="GT_ResponseTime">
+				<wsag:ServiceScope wsag:ServiceName="ServiceName" />
+				<!-- The qualifying conditions that must be met before the guarantee 
+					is evaluated -->
+				<!-- <wsag:QualifyingCondition>state EQ 'ready'</wsag:QualifyingCondition> -->
+				<wsag:ServiceLevelObjective>
+					<wsag:KPITarget>
+						<wsag:KPIName>ResponseTime</wsag:KPIName> <!-- same name as property for the moment -->
+						<wsag:CustomServiceLevel>{"contraint" : "ResponseTime LT 100"}</wsag:CustomServiceLevel> <!-- the ServiceProperty is referenced here -->
+					</wsag:KPITarget>
+				</wsag:ServiceLevelObjective>
+			</wsag:GuaranteeTerm>
+		</wsag:All>
+	</wsag:Terms>
+</wsag:Agreement>
