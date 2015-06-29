@@ -107,7 +107,7 @@ LOGIN_REDIRECT_URL = '/login'
 LOGOUT_URL = '/logout/'
 
 IDM_REDIRECT_URL = '{sla_gui_host}/slagui/callbackIdm'
-IDM_CLIENT_ID = '767'
+IDM_CLIENT_ID = '{idm_client_id}'
 IDM_LOGIN_STATE = 'test1234567890'
 IDM_URL = 'account.lab.fiware.org'
 IDM_HTTP_TYPE = 'https'
@@ -155,8 +155,8 @@ INTERNAL_IPS=("127.0.0.1", "192.168.56.1")
 DEBUG = True
 
 #Secret data to integrate with the IdM GUI
-SECRET_TOKEN = "767"
-SECRET_KEY = 'd8266ec1300898f60025bb08cbd701b40faf3f767ab64c1c6e703315ee42bfe416bbed90168c2c803f91e29a9dcaf06e52924f9fbb69547ce69bf22762022d4e'
+SECRET_TOKEN = "{idm_client_id}"
+SECRET_KEY = '{idm_client_secret}'
 
 #With the new version of the IdM, we need to introduce different credentials to obtain el token for the DCA and the FM
 #In the future, it will be manage by the IdM and we only need to use one credential to access to all the components of the Federation layer. 
