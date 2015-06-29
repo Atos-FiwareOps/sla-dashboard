@@ -106,7 +106,7 @@ LOGIN_REDIRECT_URL = '/login'
 
 LOGOUT_URL = '/logout/'
 
-IDM_REDIRECT_URL = 'http://localhost:8000/slagui/callbackIdm'
+IDM_REDIRECT_URL = '{sla_gui_host}/slagui/callbackIdm'
 IDM_CLIENT_ID = '767'
 IDM_LOGIN_STATE = 'test1234567890'
 IDM_URL = 'account.lab.fiware.org'
@@ -146,9 +146,9 @@ ACCEPT_HEADER = 'Accept'
 #
 
 # SlaManager root url
-SLA_MANAGER_URL={sla_manager_url}
-SLA_MANAGER_USER={sla_manager_user}
-SLA_MANAGER_PASSWORD={sla_manager_password}
+SLA_MANAGER_URL = '{sla_manager_url}'
+SLA_MANAGER_USER = '{sla_manager_user}'
+SLA_MANAGER_PASSWORD = '{sla_manager_password}'
 # Development Internal IPs
 INTERNAL_IPS=("127.0.0.1", "192.168.56.1")
 # SECURITY WARNING: don't run with debug turned on in production!
