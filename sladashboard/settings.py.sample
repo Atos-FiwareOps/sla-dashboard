@@ -46,6 +46,11 @@ INSTALLED_APPS = (
     #'debug_toolbar',
 )
 
+JENKINS_TASKS = (
+            'django_jenkins.tasks.run_pylint',
+            'django_jenkins.tasks.with_coverage',
+)
+
 MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -141,9 +146,9 @@ ACCEPT_HEADER = 'Accept'
 #
 
 # SlaManager root url
-SLA_MANAGER_URL="http://127.0.0.1:8080/sla-service"
-SLA_MANAGER_USER="user"
-SLA_MANAGER_PASSWORD="password"
+SLA_MANAGER_URL={sla_manager_url}
+SLA_MANAGER_USER={sla_manager_user}
+SLA_MANAGER_PASSWORD={sla_manager_password}
 # Development Internal IPs
 INTERNAL_IPS=("127.0.0.1", "192.168.56.1")
 # SECURITY WARNING: don't run with debug turned on in production!

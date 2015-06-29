@@ -1,5 +1,5 @@
 # BSD https://github.com/django/django/blob/master/LICENSE
-#Django==1.6.4
+Django==1.6.4
 
 # BSD https://github.com/django-extensions/django-extensions/blob/master/LICENSE
 django-extensions
@@ -18,3 +18,18 @@ python-dateutil<2.0
 
 # Library for developers to extract data from Microsoft Excel (tm) spreadsheet files https://github.com/python-excel/xlrd
 xlwt
+
+#Library for OAuth version 1.0
+oauth2
+
+#Plug and play continuous integration with django and jenkins
+django-jenkins
+
+#Code coverage measurement for Python
+coverage
+
+#Python code static checker
+pylint
+
+#Virtual Python Environment builder
+virtualenv
