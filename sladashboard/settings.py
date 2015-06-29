@@ -40,6 +40,7 @@ INSTALLED_APPS = (
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_jenkins',
     'slagui',
     'wstore',
     #'debug_toolbar',
@@ -140,7 +141,7 @@ ACCEPT_HEADER = 'Accept'
 #
 
 # SlaManager root url
-SLA_MANAGER_URL="http://127.0.0.1:8080/sla-service-0.1.1-SNAPSHOT"
+SLA_MANAGER_URL="http://127.0.0.1:8080/sla-service"
 SLA_MANAGER_USER="user"
 SLA_MANAGER_PASSWORD="password"
 # Development Internal IPs
