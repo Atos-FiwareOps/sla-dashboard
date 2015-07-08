@@ -33,3 +33,6 @@ pylint
 
 #Virtual Python Environment builder
 virtualenv
+
+#Gunicorn WSGI HTTP Server for UNIX
+gunicorn
