@@ -1,0 +1,25 @@
+.sla-hform{}
+
+.sla-hform > .sla-row {
+	display: block;
+}
+
+.sla-hform > .sla-row > *,
+.sla-hform > .sla-row > div {
+	display: inline-flex;
+	margin-right: 10px;
+}
+
+
+div.sla-label {
+	width: 75px;
+}
+
+.sla-hform > .sla-row > div.sla-label > label {
+	display: inline;
+}
+
+.sla-hform > .sla-row > .btn {
+	margin-bottom: 10px;	
+}
+

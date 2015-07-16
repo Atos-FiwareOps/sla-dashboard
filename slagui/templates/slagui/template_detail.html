@@ -32,15 +32,21 @@
 						<th>Service Property</th>
 						<th>Guarantee Metric</th>
 						<th>Boundaries</th>
+						<th>Interval</th>
 					</tr>
 
 					{% for t in te_list %}
 						<tr class="{{t.statusclass}}">
 							<td>{{forloop.counter}}</td>
 							<td>{{ t.name }}</td>
-							<td>{{t.kpiName}}</td>
+							<td>{{ t.kpiName}}</td>
 							<td>{{ t.constraint }}</td>
-
+							
+							{% if t.policy == "" %}
+								<td>Real time</td>
+							{% else %}
+								<td>{{ t.policy }}</td>
+							{% endif %}
 						</tr>
 						{% empty %}
 					{% endfor %}

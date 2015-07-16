@@ -28,6 +28,7 @@ import wsag_helper
 from keystone_adapter import KeyStoneAdapter
 
 from django.core.cache import cache
+from __builtin__ import str
 
 
 #
@@ -503,6 +504,7 @@ def create_template(request):
                  context["info"] = ["Template creation error! Guarantee values are not correct)"]
                  return HttpResponse(json.dumps(context), mimetype="application/json")
             const["constraint"] = rp.get("gname" + str(y)) + " " + rp.get("cons" + str(y)) + " " + rp.get("consval" + str(y))
+            const["policy"] = int(rp.get("polval" + str(y)))
             gr = {
                 "name": rp.get('gname' + str(y)),
                 "serviceScope": {
@@ -1068,6 +1070,12 @@ def template_details(request, template_id):
                 "kpiName": te["serviceLevelObjetive"]["kpitarget"]["kpiName"],
                 "constraint": json.loads(te["serviceLevelObjetive"]["kpitarget"]["customServiceLevel"])["constraint"]
             }
+            
+            if "policy" in te["serviceLevelObjetive"]["kpitarget"]["customServiceLevel"]:
+                te_item["policy"] = json.loads(te["serviceLevelObjetive"]["kpitarget"]["customServiceLevel"])["policy"]
+            else:
+                te_item["policy"] = ""
+            
             te_list.append(te_item)
         context = {
             "temp_name": t["name"],
