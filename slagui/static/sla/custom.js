@@ -84,6 +84,7 @@
 	            		'</div>' + 
 	            		'<div class="col-sm-10">' +
 		            		'<select id="polval'+grRowNum+'" name="polval'+grRowNum+'">' +
+		            			'<option value="-1">Real time</option>' +
 			        			'<option value="6">Over 6 hours</option>' +
 			        			'<option value="12">Over 12 hours</option>' +
 			        			'<option value="24">Over 24 hours</option>' +

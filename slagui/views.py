@@ -504,7 +504,10 @@ def create_template(request):
                  context["info"] = ["Template creation error! Guarantee values are not correct)"]
                  return HttpResponse(json.dumps(context), mimetype="application/json")
             const["constraint"] = rp.get("gname" + str(y)) + " " + rp.get("cons" + str(y)) + " " + rp.get("consval" + str(y))
-            const["policy"] = int(rp.get("polval" + str(y)))
+            
+            if int(rp.get("polval" + str(y))) > 0:
+                const["policy"] = int(rp.get("polval" + str(y)))
+                
             gr = {
                 "name": rp.get('gname' + str(y)),
                 "serviceScope": {
