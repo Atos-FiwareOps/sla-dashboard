@@ -5,7 +5,7 @@ import urlparse
 import json
 import sys
 import unicodedata
-
+import re
 
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
@@ -413,6 +413,11 @@ def create_agreement(request):
         const = {}
         for y in range(1, int(rp.get('grRowNum')) + 1):
             const["constraint"] = rp.get("gname" + str(y)) + " " +rp.get("cons" + str(y)) + " " + rp.get("consval" + str(y))
+            
+            policy_obj = re.search("^.*(\d+).*$", rp.get("polval" + str(y)))
+            if policy_obj:
+                const["policy"] = int(policy_obj.group(1))
+            
             gr = {
                 "name": rp.get('gname' + str(y)),
                 "serviceScope": {
@@ -1112,6 +1117,12 @@ def template_constraints(request, template_id):
                     "cns_name": t["terms"]["allTerms"]["serviceProperties"][0]["variableSet"]["variables"][index]["name"],
                     "kpiName": te["serviceLevelObjetive"]["kpitarget"]["kpiName"]
                     }
+                
+                if "policy" in te["serviceLevelObjetive"]["kpitarget"]["customServiceLevel"]:
+                    te_item["policy"] = json.loads(te["serviceLevelObjetive"]["kpitarget"]["customServiceLevel"])["policy"]
+                else:
+                    te_item["policy"] = ""
+                
                 te_list.append(te_item)
             print json.dumps(te_list)
         except:
