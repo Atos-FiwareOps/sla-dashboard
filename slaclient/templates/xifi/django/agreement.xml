@@ -1,42 +1,42 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <wsag:Agreement xmlns:wsag="http://www.ggf.org/namespaces/ws-agreement"
-    {% if data.agreement_id %}AgreementId="{{data.agreement_id}}"{% endif %}>
-    {% if data.agreement_name %}<wsag:Name>{{data.agreement_name}}</wsag:Name>{% endif %}
+	{% if data.agreement_id %}AgreementId="{{data.agreement_id}}"{% endif %}>
+	{% if data.agreement_name %}<wsag:Name>{{data.agreement_name}}</wsag:Name>{% endif %}
 
-    <wsag:Context>
-        <wsag:AgreementInitiator>{{data.consumer}}</wsag:AgreementInitiator>
-        <wsag:AgreementResponder>{{data.provider}}</wsag:AgreementResponder>
-        <wsag:ServiceProvider>AgreementResponder</wsag:ServiceProvider>
-        <wsag:ExpirationTime>{{data.expiration_time_iso}}</wsag:ExpirationTime>
-        <wsag:TemplateId>{{data.template_id}}</wsag:TemplateId>
-        {% if data.service_id %}<sla:Service xmlns:sla="http://sla.atos.eu">{{data.service_id}}</sla:Service>{% endif %}
-    </wsag:Context>
+	<wsag:Context>
+		<wsag:AgreementInitiator>{{data.consumer}}</wsag:AgreementInitiator>
+		<wsag:AgreementResponder>{{data.provider}}</wsag:AgreementResponder>
+		<wsag:ServiceProvider>AgreementResponder</wsag:ServiceProvider>
+		<wsag:ExpirationTime>{{data.expiration_time_iso}}</wsag:ExpirationTime>
+		<wsag:TemplateId>{{data.template_id}}</wsag:TemplateId>
+		{% if data.service_id %}<sla:Service xmlns:sla="http://sla.atos.eu">{{data.service_id}}</sla:Service>{% endif %}
+	</wsag:Context>
 
-    <wsag:Terms>
-        <wsag:All>
-            <wsag:ServiceProperties
-                    wsag:Name="ServiceProperties"
-                    wsag:ServiceName="{{data.service_id|default:"service"}}">
-                <wsag:Variables>
-                {% for property in data.service_properties %}   <wsag:Variable
-                            wsag:Name="{{property.name}}"
-                            wsag:Metric="{{property.metric|default:'xs:double'}}">
-                        <wsag:Location>{{property.location|default:property.name}}</wsag:Location>
-                    </wsag:Variable>
-                {% endfor %}</wsag:Variables>
-            </wsag:ServiceProperties>
-            {% for term in data.guarantee_terms %}
-            <wsag:GuaranteeTerm Name="{{term.name}}">
-                {# do not need servicescope #}
-                <wsag:ServiceLevelObjective>
-                    <wsag:KPITarget>
-                        <wsag:KPIName>{{term.kpiname}}</wsag:KPIName>
-                        <wsag:CustomServiceLevel>
-                            {"constraint" : "{{term.metric_name}} BETWEEN ({{term.bounds.0}}, {{term.bounds.1}})"}
-                        </wsag:CustomServiceLevel>
-                    </wsag:KPITarget>
-                </wsag:ServiceLevelObjective>
-            </wsag:GuaranteeTerm>{% endfor %}
-        </wsag:All>
-    </wsag:Terms>
+	<wsag:Terms>
+		<wsag:All>
+			<wsag:ServiceProperties
+					wsag:Name="ServiceProperties"
+					wsag:ServiceName="{{data.service_id|default:"service"}}">
+				<wsag:Variables>
+				{% for property in data.service_properties %}   <wsag:Variable
+							wsag:Name="{{property.name}}"
+							wsag:Metric="{{property.metric|default:'xs:double'}}">
+						<wsag:Location>{{property.location|default:property.name}}</wsag:Location>
+					</wsag:Variable>
+				{% endfor %}</wsag:Variables>
+			</wsag:ServiceProperties>
+			{% for term in data.guarantee_terms %}
+			<wsag:GuaranteeTerm Name="{{term.name}}">
+				{# do not need servicescope #}
+				<wsag:ServiceLevelObjective>
+					<wsag:KPITarget>
+						<wsag:KPIName>{{term.kpiname}}</wsag:KPIName>
+						<wsag:CustomServiceLevel>
+							{"constraint" : "{{term.metric_name}} BETWEEN ({{term.bounds.0}}, {{term.bounds.1}})"}
+						</wsag:CustomServiceLevel>
+					</wsag:KPITarget>
+				</wsag:ServiceLevelObjective>
+			</wsag:GuaranteeTerm>{% endfor %}
+		</wsag:All>
+	</wsag:Terms>
 </wsag:Agreement>

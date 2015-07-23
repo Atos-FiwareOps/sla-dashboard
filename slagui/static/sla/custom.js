@@ -95,7 +95,7 @@
 
 			$('#guarantees div:last').before(row);
 		}
-	e}
+	}
 
 	function agrGrAddRow (key, value, name, kpiName, policy, t_name, t_time, service, provider) {
 		grRowNum ++;

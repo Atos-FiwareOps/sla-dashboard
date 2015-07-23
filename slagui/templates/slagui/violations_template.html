@@ -1,60 +1,59 @@
-<div class="span5">
-    <h3 style="color: #0088cc;">
-        Violations
-    </h3>
-
-    <div id="context">
-        <dl class="dl-horizontal">
-            {# Sanity default: if dd is empty, the values are permutated #}
-            <dt style="color: #0088cc;">Agreement Id</dt>
-                <dd>{{agreement.agreement_id|default:"&nbsp;"}}</dd>
-            <dt style="color: #0088cc;">Service</dt>
-                <dd>{{agreement.context.service|default:"&nbsp;"}}</dd>
-            <dt style="color: #0088cc;">Metric name</dt>
-                <dd>{{guarantee_term.servicelevelobjective.kpiname|default:"&nbsp;"}}</dd>
-            {% with guarantee_term.servicelevelobjective.bounds as bounds %}
-            <dt style="color: #0088cc;">Bounds</dt>
-                <dd>({{bounds.0|default:"&nbsp;"}}, {{bounds.1|default:"&nbsp;"}})</dd>
-            {% endwith %}
-             </dl>
-
-    </div>
-
-</div>
-<div class="span10">
-    <div id="violations">
-
-        <table class="table table-hover">
-            <tr>
-                <th style="color: #0088cc;">Date</th>
-                <th style="color: #0088cc;">Actual value</th>
-            </tr>
-
-            {% for v in violations_list %}
-            <tr>
-                <td>{{v.datetime}}</td>
-                <td>{{v.actual_value}}</td>
-            </tr>
-            {% empty %}
-            <tr><td colspan="3">No violations</td></tr>
-            {% endfor %}
-        </table>
-    </div>
-
-    <a href="{{backurl}}" class="btn btn-default btn-back">Back</a>
-<div class="pagination">
-    <span class="step-links">
-        {% if violations_list.has_previous %}
-            <a href="?page={{ violations_list.previous_page_number }}">previous</a>
-        {% endif %}
-
-        <span class="current">
-            Page {{ violations_list.number }} of {{ violations_list.paginator.num_pages }}.
-        </span>
-
-        {% if violations_list.has_next %}
-            <a href="?page={{ violations_list.next_page_number }}">next</a>
-        {% endif %}
-    </span>
-</div>
-</div>
+		<div class="span5">
+			<h3 style="color: #0088cc;">
+				Violations
+			</h3>
+		
+			<div id="context">
+				<dl class="dl-horizontal">
+					{# Sanity default: if dd is empty, the values are permutated #}
+					<dt style="color: #0088cc;">Agreement Id</dt>
+						<dd>{{agreement.agreement_id|default:"&nbsp;"}}</dd>
+					<dt style="color: #0088cc;">Service</dt>
+						<dd>{{agreement.context.service|default:"&nbsp;"}}</dd>
+					<dt style="color: #0088cc;">Metric name</dt>
+						<dd>{{guarantee_term.servicelevelobjective.kpiname|default:"&nbsp;"}}</dd>
+					{% with guarantee_term.servicelevelobjective.bounds as bounds %}
+					<dt style="color: #0088cc;">Bounds</dt>
+						<dd>({{bounds.0|default:"&nbsp;"}}, {{bounds.1|default:"&nbsp;"}})</dd>
+					{% endwith %}
+				</dl>
+			</div>
+		
+		</div>
+		<div class="span10">
+			<div id="violations">
+		
+				<table class="table table-hover">
+					<tr>
+						<th style="color: #0088cc;">Date</th>
+						<th style="color: #0088cc;">Actual value</th>
+					</tr>
+		
+					{% for v in violations_list %}
+					<tr>
+						<td>{{v.datetime}}</td>
+						<td>{{v.actual_value}}</td>
+					</tr>
+					{% empty %}
+					<tr><td colspan="3">No violations</td></tr>
+					{% endfor %}
+				</table>
+			</div>
+		
+			<a href="{{backurl}}" class="btn btn-default btn-back">Back</a>
+			<div class="pagination">
+				<span class="step-links">
+					{% if violations_list.has_previous %}
+					<a href="?page={{ violations_list.previous_page_number }}">previous</a>
+					{% endif %}
+			
+					<span class="current">
+						Page {{ violations_list.number }} of {{ violations_list.paginator.num_pages }}.
+					</span>
+			
+					{% if violations_list.has_next %}
+					<a href="?page={{ violations_list.next_page_number }}">next</a>
+					{% endif %}
+				</span>
+			</div>
+		</div>

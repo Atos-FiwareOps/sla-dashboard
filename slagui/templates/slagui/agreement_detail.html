@@ -1,13 +1,126 @@
 {% extends "index.html" %}
 
 {% block head %}
+		<script>
+			$(document).ready(function() {
+				//start
+				var organizations = {{orgs|safe}};
+				var currentOrganization = {{current_organization|safe}};
+				$('.dropdown-submenu').remove();
+		
+				// Include switch sesion menu if the user belong to
+				// any organization
+				if (organizations.length > 1) {
+					var ul;
+					var leftMenu = $('<li></li>').addClass('dropdown-submenu pull-left');
+					$('<a></a>').text('Switch session').appendTo(leftMenu);
+					$('<i></i>').addClass('icon-caret-right').appendTo(leftMenu);
+		
+					ul = $('<ul></ul>').addClass('dropdown-menu dropdown-menu-header').appendTo(leftMenu);
+		
+					for (var i = 0; i < organizations.length; i++) {
+						if (organizations[i].name != currentOrganization.name) {
+							var li = $('<li></li>');
+							var a = $('<a></a>').text(organizations[i].name).attr('data-placement','left').attr('data-toggle', 'tooltip').attr('href', "/slagui?org=" + organizations[i].name);
+							a.appendTo(li);
+		
+							if (organizations[i].real_org == "False") {
+								a.prepend($('<img></img>').attr('src', '/static/oil/img/user.png'));
+								ul.prepend(li);
+							} else {
+								a.prepend($('<img></img>').attr('src', '/static/oil/img/group.png'));
+								ul.append(li);
+							}
+		
+						}
+					}
+		
+					ul.css('display', 'none');
+					ul.css('position', 'absolute');
+					ul.css('top', '10px');
+					ul.css('right', '157px');
+		
+					leftMenu.on('mouseover',
+						function() {
+							ul.css('display', 'block');
+						}
+					);
+		
+					leftMenu.on('mouseout',
+						function() {
+							ul.css('display', 'none');
+						}
+					);
+		
+					$('#settings-menu').prepend(leftMenu);
+		
+					// Set username
+					if (currentOrganization.real_org == "False") {
+						$('.oil-usr-icon').attr('src', '/static/oil/img/user.png');
+					} else {
+						$('.oil-usr-icon').attr('src', '/static/oil/img/group.png');
+					}
+					 $('#oil-usr').text(currentOrganization.name);
+				}
+					//end
+				console.log("ready")
+			});
+		</script>
 {% endblock head %}
 
 
 {% block content %}
-
-{% include "slagui/agreement_detail_template.html" %}
-
+		<div class="span5">
+			<h3 style="color: #0088cc;">Template details</h3>
+			<div id="context">
+				<dl class="dl-horizontal">
+					{# Sanity default: if dd is empty, the values are permutated #}
+					<dt style="color: #0088cc;">Template Id</dt>
+						<dd>{{temp_id|default:"&nbsp;"}}</dd>
+					<dt style="color: #0088cc;">Template name</dt>
+						<dd>{{temp_name|default:"&nbsp;"}}</dd>
+					<dt style="color: #0088cc;">Expiration Date</dt>
+						<dd>{{context.expirationTime|default:"&nbsp;"}}</dd>
+					<dt style="color: #0088cc;">Service</dt>
+						<dd>{{context.service|default:"&nbsp;"}}</dd>
+					<dt style="color: #0088cc;">Provider</dt>
+						<dd>{{context.agreementInitiator|default:"&nbsp;"}}</dd>
+				</dl>
+				
+				<div class="span8">
+					<h3 style="color: #0088cc;">Service Properties</h3>
+					<div id="properties_summary">
+						<table class="table">
+							<tr>
+								<th>#</th>
+								<th>Service Property</th>
+								<th>Guarantee Metric</th>
+								<th>Boundaries</th>
+								<th>Interval</th>
+							</tr>
+		
+							{% for t in te_list %}
+							<tr class="{{t.statusclass}}">
+								<td>{{forloop.counter}}</td>
+								<td>{{ t.name }}</td>
+								<td>{{ t.kpiName}}</td>
+								<td>{{ t.constraint }}</td>
+								
+								{% if t.policy == "" %}
+								<td>Real time</td>
+								{% else %}
+								<td>{{ t.policy }}</td>
+								{% endif %}
+							</tr>
+							{% empty %}
+							{% endfor %}
+						</table>
+					</div>
+				</div>
+			</div>
+		
+			<a href="{{backurl}}" class="btn btn-default btn-back">Back</a>
+		</div>
 {% endblock content %}
 
 {% block end %}

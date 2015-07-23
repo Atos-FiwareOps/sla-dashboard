@@ -18,14 +18,14 @@ tpl.render(data)
 
 class Template(object):
 
-    def __init__(self, file_):
-        """This is the interface that all project templates should "implement".
+	def __init__(self, file_):
+		"""This is the interface that all project templates should "implement".
 
-        It mimics the behavior of django templates.
-        """
-        pass
+		It mimics the behavior of django templates.
+		"""
+		pass
 
-    def render(self, data):
-        """Renders this template using 'data' as input.
-        """
-        pass
+	def render(self, data):
+		"""Renders this template using 'data' as input.
+		"""
+		pass

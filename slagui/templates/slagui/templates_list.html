@@ -1,148 +1,155 @@
-<div class="span3">
-    {%if show_form == True %}
-    <div class="checkbox">
-        <label>
-          <input id="show-template" type="checkbox">Create Template
-        </label>
-    </div>
-    {% endif %}
-</div>
-<div class="span10">
-
-    <h3 class="txt-gradient">Templates List</h3>
-    <table class="table">
-        <tr>
-            <th>Template name</th>
-            <th>Template Id</th>
-            <th>Expiration Time</th>
-            <th>Service</th>
-        </tr>
-        <tbody>
-             {% for t in template_list %}
-            <tr class="temp-popovers">
-                <td>
-                    <span><a href="{% url 'template_details' t.temp_id %}">{{ t.temp_name }}</a> </span>
-                </td>
-                <td>
-                    <span>{{ t.temp_id }}</span>
-                </td>
-                <td>
-                    <span>{{ t.exp_date }}</span>
-                </td>
-                <td>
-                    <span>{{ t.service_id }}</span>
-                </td>
-
-            </tr>
-        {% endfor %}
-        </tbody>
-    </table>
-
-<div id="template-alert" class="alert alert-success" style="visibility: hidden">
-        </div>
-{%if show_form == True%}
-
-        <!-- Modal -->
-        <div id="serviceModal" class="modal hide" tabindex="-1" role="dialog">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 style="color: #5bc0de">List of Services to create Templates</h3>
-            </div>
-            <div class="modal-body">
-            {% if r == 'IO' %}
-                <div>
-                    <h4 style="color: #5bc0de">Hosts for the Paas Services</h4>
-                </div>
-                {% if paas %}
-                    {% for p in paas %}
-                        <div class="control-group">
-                            <span><a href="#" onclick="selectService('host|{{ p.node }}:{{ p.id }}');">host|{{ p.node }}:{{ p.id }}</a> </span>
-                        </div>
-                    {% endfor %}
-                {% else %}
-                    <span>Error: {{ t_paas_err }}</span>
-                {% endif %}
-            {% endif %}
-
-
-                <div>
-                    <h4 style="color: #5bc0de">VM associated to the Saas Services</h4>
-                </div>
-            {% if saas %}
-                {% for s in saas %}
-                    <div class="control-group">
-                        <span><a href="#" onclick="selectService('vm|{{ s.node }}:{{ s.uuid }}');">{{ s.name }}, {{ s.node }} (vm|{{ s.node }}:{{ s.uuid }})</a> </span>
-                    </div>
-                {% endfor %}
-            {% else %}
-                <span>Error: {{ t_saas_err }}</span>
-            {% endif %}
-
-            </div>
-            <div class="modal-footer">
-                <button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-            </div>
-        </div>
-
-<form action="{% url "create_template" %}" method="post" id="create-temp-form" class="well" style="visibility: hidden">
-        {% csrf_token %}
-        <div id="itemRows">
-            <input type="hidden" name="rownum" id="rownum" value="">
-            <input type="hidden" name="grrownum" id="grrownum" value="">
-            <div class="control-group">
-                <div class="control-group">
-                    <span class="label label-info" style="width: 150px">Template Name:</span>
-                    <input type="text" name="tname" id="tname" class="form-control" style="margin-left: 20px; width: 350px;"/>
-                </div>
-                 <div class="control-group">
-                     <span class="label label-info" style="width: 150px">Service Id:</span>
-                     <input id="tsid" name="tsid" class="form-control" style="margin-left: 20px; width: 350px;" readonly="readonly"/>
-                     <a href="#serviceModal" data-toggle="modal">Show Services</a>
-                 </div>
-                 <div class="control-group">
-                     <span class="label label-info" style="width: 150px">Expiration date:</span>
-                     <div id="datetimepicker1" class="input-append date" style="margin-left: 20px">
-                    <input id="template_date" name="template_date" data-format="dd-MM-yyyy hh:mm:ss" type="text" readonly/>
-                    <span class="add-on">
-                      <i data-time-icon="icon-time" data-date-icon="icon-calendar">
-                      </i>
-                    </span>
-                  </div>
-                    <script type="text/javascript">
-                      $(function() {
-                        $('#datetimepicker1').datetimepicker({
-                          language: 'pt-BR'
-                        });
-                      });
-                    </script>
-                 </div>
-                <div id="metrics"  class="control-group">
-                    <div class="control-group">
-                        <input id="addServiceProperty" type="button" class="btn" value="Add properties" onclick="addRow()" style="margin-top: 10px"/>
-                    </div>
-                    <div class="control-group">
-                        <span class="label label-info" style="width: 150px">Service Properties</span>
-                    </div>
-                   <div class="control-group">
-                        <div id="metric-list"></div>
-                    </div>
-
-                </div>
-                 <div id="guarantees" class="control-group">
-                     <div class="control-group">
-                          <span class="label label-info" style="width: 150px">Guarantees</span>
-                     </div>
-                     <div class="control-group">
-                          <div id="guarantees-list"></div>
-                     </div>
-
-                 </div>
-                <div class="control-group">
-                    <input type="submit" class="btn" style="margin-top: 10px"/>
-                </div>
-            </div>
-        </div>
-    </form>
- {% endif %}
-</div>
-
+		<div class="span3">
+			{%if show_form == True %}
+			<div class="checkbox">
+				<label>
+					<input id="show-template" type="checkbox">Create Template
+				</label>
+			</div>
+			{% endif %}
+		</div>
+		
+		<div class="span10">
+			<h3 class="txt-gradient">Templates List</h3>
+			<table class="table">
+				<tr>
+					<th>Template name</th>
+					<th>Template Id</th>
+					<th>Expiration Time</th>
+					<th>Service</th>
+				</tr>
+				<tbody>
+					{% for t in template_list %}
+					<tr class="temp-popovers">
+						<td>
+							<span><a href="{% url 'template_details' t.temp_id %}">{{ t.temp_name }}</a> </span>
+						</td>
+						<td>
+							<span>{{ t.temp_id }}</span>
+						</td>
+						<td>
+							<span>{{ t.exp_date }}</span>
+						</td>
+						<td>
+							<span>{{ t.service_id }}</span>
+						</td>
+		
+					</tr>
+					{% endfor %}
+				</tbody>
+			</table>
+			
+			<div id="template-alert" class="alert alert-success" style="visibility: hidden">
+			</div>
+		
+			{% if show_form == True %}
+		
+			<!-- Modal -->
+			<div id="serviceModal" name="serviceModal" class="modal hide" tabindex="-1" role="dialog">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h3 style="color: #5bc0de">List of Services to create Templates</h3>
+				</div>
+				
+				<div class="modal-body">
+					{% if r == 'IO' %}
+					<div>
+						<h4 style="color: #5bc0de">Hosts for the Paas Services</h4>
+					</div>
+					
+						{% if paas %}
+						
+							{% for p in paas %}
+					<div class="control-group">
+						<span><a href="#" onclick="selectService('host|{{ p.node }}:{{ p.id }}');">host|{{ p.node }}:{{ p.id }}</a> </span>
+					</div>
+							{% endfor %}
+							
+						{% else %}
+					<span>Error: {{ t_paas_err }}</span>
+						{% endif %}
+						
+					{% endif %}
+			
+			
+					<div>
+						<h4 style="color: #5bc0de">VM associated to the Saas Services</h4>
+					</div>
+					
+					{% if saas %}
+					
+						{% for s in saas %}
+					<div class="control-group">
+						<span><a href="#" onclick="selectService('vm|{{ s.node }}:{{ s.uuid }}');">{{ s.name }}, {{ s.node }} (vm|{{ s.node }}:{{ s.uuid }})</a> </span>
+					</div>
+						{% endfor %}
+					
+					{% else %}
+					<span>Error: {{ t_saas_err }}</span>
+					{% endif %}
+				</div>
+				
+				<div class="modal-footer">
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+				</div>
+			</div>
+		
+			<form action="{% url "create_template" %}" method="post" id="create-temp-form" class="well" style="visibility: hidden">
+				{% csrf_token %}
+				<div id="itemRows">
+					<input type="hidden" name="rownum" id="rownum" value="">
+					<input type="hidden" name="grrownum" id="grrownum" value="">
+					<div class="control-group">
+						<div class="control-group">
+							<span class="label label-info" style="width: 150px">Template Name:</span>
+							<input type="text" name="tname" id="tname" class="form-control" style="margin-left: 20px; width: 350px;"/>
+						</div>
+						<div class="control-group">
+							<span class="label label-info" style="width: 150px">Service Id:</span>
+							<input id="tsid" name="tsid" class="form-control" style="margin-left: 20px; width: 350px;" readonly="readonly"/>
+							<a href="#serviceModal" data-toggle="modal">Show Services</a>
+						</div>
+						<div class="control-group">
+							<span class="label label-info" style="width: 150px">Expiration date:</span>
+							<div id="datetimepicker1" class="input-append date" style="margin-left: 20px">
+								<input id="template_date" name="template_date" data-format="dd-MM-yyyy hh:mm:ss" type="text" readonly/>
+								<span class="add-on">
+									<i data-time-icon="icon-time" data-date-icon="icon-calendar"></i>
+								</span>
+							</div>
+							<script type="text/javascript">
+								$(function() {
+									$('#datetimepicker1').datetimepicker({
+										language: 'pt-BR'
+									});
+								});
+							</script>
+						</div>
+						<div id="metrics"  class="control-group">
+							<div class="control-group">
+								<input id="addServiceProperty" type="button" class="btn" value="Add properties" onclick="addRow()" style="margin-top: 10px"/>
+							</div>
+							<div class="control-group">
+								<span class="label label-info" style="width: 150px">Service Properties</span>
+							</div>
+							<div class="control-group">
+								<div id="metric-list"></div>
+							</div>
+		
+						</div>
+						<div id="guarantees" class="control-group">
+							<div class="control-group">
+								<span class="label label-info" style="width: 150px">Guarantees</span>
+							</div>
+							<div class="control-group">
+								<div id="guarantees-list"></div>
+							</div>
+		
+						</div>
+						<div class="control-group">
+							<input type="submit" class="btn" style="margin-top: 10px"/>
+						</div>
+					</div>
+				</div>
+			</form>
+			{% endif %}
+		</div>

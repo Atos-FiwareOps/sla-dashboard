@@ -1,155 +1,176 @@
 {% extends "index.html" %}
-
+{% block head %}
+		<script>
+			$(document).ready(function() {
+				//start
+				var organizations = {{orgs|safe}};
+				var currentOrganization = {{current_organization|safe}};
+				$('.dropdown-submenu').remove();
+		
+				// Include switch sesion menu if the user belong to
+				// any organization
+				if (organizations.length > 1) {
+					var ul;
+					var leftMenu = $('<li></li>').addClass('dropdown-submenu pull-left');
+					$('<a></a>').text('Switch session').appendTo(leftMenu);
+					$('<i></i>').addClass('icon-caret-right').appendTo(leftMenu);
+			
+					ul = $('<ul></ul>').addClass('dropdown-menu dropdown-menu-header').appendTo(leftMenu);
+			
+					for (var i = 0; i < organizations.length; i++) {
+						if (organizations[i].name != currentOrganization.name) {
+							var li = $('<li></li>');
+							var a = $('<a></a>').text(organizations[i].name).attr('data-placement','left').attr('data-toggle', 'tooltip').attr('href', "/slagui/templates?org=" + organizations[i].name);
+							a.appendTo(li);
+			
+							if (organizations[i].real_org == "False") {
+								a.prepend($('<img></img>').attr('src', '/static/oil/img/user.png'));
+								ul.prepend(li);
+							} else {
+								a.prepend($('<img></img>').attr('src', '/static/oil/img/group.png'));
+								ul.append(li);
+							}
+						}
+					}
+			
+					ul.css('display', 'none');
+					ul.css('position', 'absolute');
+					ul.css('top', '10px');
+					ul.css('right', '157px');
+			
+					leftMenu.on('mouseover',
+						function() {
+							ul.css('display', 'block');
+						}
+					);
+			
+					leftMenu.on('mouseout',
+						function() {
+							ul.css('display', 'none');
+						}
+					);
+			
+					$('#settings-menu').prepend(leftMenu);
+			
+					// Set username
+					if (currentOrganization.real_org == "False") {
+						$('.oil-usr-icon').attr('src', '/static/oil/img/user.png');
+					} else {
+						$('.oil-usr-icon').attr('src', '/static/oil/img/group.png');
+					}
+					$('#oil-usr').text(currentOrganization.name);
+				}
+				
+				//end
+				$(".temp-popovers a").popover({
+					placement : 'top'
+				});
+				
+				$(".status-success").addClass("icon-ok-sign").attr("title", "Fulfilled")
+				$(".status-error").addClass("icon-remove-sign").attr("title", "Violated")
+				$(".status-non-determined").addClass("icon-exclamation-sign").attr("title", "Non determined")
+		
+				$(".icon-plus, .icon-minus").click(function(){ $(this).toggleClass("icon-plus icon-minus")});
+		
+				$('#show-template').change(
+					function(){
+						if ($(this).is(':checked')) {
+							$("#create-temp-form").css("visibility", "visible");
+						}else{
+							$("#create-temp-form").css("visibility", "hidden");
+						}
+					}
+				);
+				
+				$('#create-temp-form').on('submit',
+					function(e) {
+						e.preventDefault();
+						$("#rownum").val(rowNum);
+						$("#grrownum").val(grRowNum);
+						var l = $( "select[name^='sname']" );
+						
+						if (l) {
+							for(var i=0; i< l.length; i++) {
+								var g = $("#gname" + (i + 1).toString()).val().split('_');
+								
+								if (g.length == 2) {
+									if ($(l[i]).val() != g[1]) {
+										alert($("#gname" + (i +1).toString()).val() + " and " + $(l[i]).val() + " are not equal!");
+										return false;
+									}
+								} else if (g.length == 3) {
+									if ($(l[i]).val() != g[1] + '_' + g[2]) {
+										alert($("#gname" + (i +1).toString()).val() + " and " + $(l[i]).val() + " are not equal!");
+										return false;
+									}
+								}
+							}
+						}
+						
+						$.ajax({
+							type: "POST",
+							url: '{% url "create_template" %}',
+							data: $(this).serialize(),
+							beforeSend:
+								function(xhr, options){
+									if (!$("#tsid").val()) {
+										alert("Service can't be blank!");
+										xhr.abort();
+									}
+									
+									if (!$("#template_date").val()) {
+										alert("Date can't be blank!");
+										xhr.abort();
+									}
+								},
+							success:
+								function (data) {
+									$("#template-alert").empty().append(data["info"]);
+									
+									if (data["msg"] == "error") {
+										$("#template-alert").removeClass().addClass("alert alert-error alert-dismissible");
+									} else {
+										$("#template-alert").removeClass().addClass("alert alert-success alert-dismissible");
+									}
+									
+									$("#template-alert").css("visibility", "visible");
+								},
+							error:
+								function () {
+									$("#template-alert").empty().append(data["info"]);
+									$("#template-alert").removeClass().addClass("alert alert-error alert-dismissible");
+									$("#template-alert").css("visibility", "visible");
+								}
+						});
+					}
+				);
+		
+				var $tempid = $('#tempid');
+				$tempid.find('option').remove();
+				
+				$.getJSON('{% url "template_list" %}',
+					function (data) {
+						$.each(data,
+							function(key, value) {
+								$tempid.append('<option value=' + key + '>' + value + '</option>');
+							}
+						);
+					}
+				);
+		
+				console.log("ready")
+			});
+		
+			function selectService(service) {
+				$("#tsid").val(service);
+				$("#serviceModel").modal("toggle");
+			}
+		</script>
+{% endblock head %}
 
 {% block content %}
 {% include "slagui/templates_list.html" %}
 {% endblock content %}
 
 {% block end %}
-<script>
-        $(document).ready(function() {
-            //start
-    var organizations = {{orgs|safe}};
-    var currentOrganization = {{current_organization|safe}};
-    $('.dropdown-submenu').remove();
-
-    // Include switch sesion menu if the user belong to
-    // any organization
-    if (organizations.length > 1) {
-        var ul;
-        var leftMenu = $('<li></li>').addClass('dropdown-submenu pull-left');
-        $('<a></a>').text('Switch session').appendTo(leftMenu);
-        $('<i></i>').addClass('icon-caret-right').appendTo(leftMenu);
-
-        ul = $('<ul></ul>').addClass('dropdown-menu dropdown-menu-header').appendTo(leftMenu);
-
-        for (var i = 0; i < organizations.length; i++) {
-            if (organizations[i].name != currentOrganization.name) {
-                var li = $('<li></li>');
-                var a = $('<a></a>').text(organizations[i].name).attr('data-placement','left').attr('data-toggle', 'tooltip').attr('href', "/slagui/templates?org=" + organizations[i].name);
-                a.appendTo(li);
-
-                if (organizations[i].real_org == "False") {
-                    a.prepend($('<img></img>').attr('src', '/static/oil/img/user.png'));
-                    ul.prepend(li);
-                } else {
-                    a.prepend($('<img></img>').attr('src', '/static/oil/img/group.png'));
-                    ul.append(li);
-                }
-
-            }
-        }
-
-        ul.css('display', 'none');
-        ul.css('position', 'absolute');
-        ul.css('top', '10px');
-        ul.css('right', '157px');
-
-        leftMenu.on('mouseover', function() {
-            ul.css('display', 'block');
-        });
-
-        leftMenu.on('mouseout', function() {
-            ul.css('display', 'none');
-        });
-
-        $('#settings-menu').prepend(leftMenu);
-
-        // Set username
-        if (currentOrganization.real_org == "False") {
-            $('.oil-usr-icon').attr('src', '/static/oil/img/user.png');
-        } else {
-            $('.oil-usr-icon').attr('src', '/static/oil/img/group.png');
-        }
-         $('#oil-usr').text(currentOrganization.name);
-    }
-        //end
-             $(".temp-popovers a").popover({
-                placement : 'top'
-            });
-            $(".status-success").addClass("icon-ok-sign").attr("title", "Fulfilled")
-            $(".status-error").addClass("icon-remove-sign").attr("title", "Violated")
-            $(".status-non-determined").addClass("icon-exclamation-sign").attr("title", "Non determined")
-
-            $(".icon-plus, .icon-minus").click(function(){ $(this).toggleClass("icon-plus icon-minus")});
-
-
-            $('#show-template').change(
-                function(){
-                    if ($(this).is(':checked')) {
-                        $("#create-temp-form").css("visibility", "visible");
-                    }else{
-                        $("#create-temp-form").css("visibility", "hidden");
-                    }
-                });
-                $('#create-temp-form').on('submit', function(e) {
-                    e.preventDefault();
-                    $("#rownum").val(rowNum);
-                    $("#grrownum").val(grRowNum);
-                    var l = $( "select[name^='sname']" );
-                    if(l){
-                        for(var i=0; i< l.length; i++){
-                            var g = $("#gname" + (i + 1).toString()).val().split('_');
-                            if(g.length == 2){
-                                if ($(l[i]).val() != g[1]){
-                                  alert($("#gname" + (i +1).toString()).val() + " and " + $(l[i]).val() + " are not equal!");
-                                  return false;
-                                }
-                            }else if(g.length == 3){
-                                if ($(l[i]).val() != g[1] + '_' + g[2]){
-                                  alert($("#gname" + (i +1).toString()).val() + " and " + $(l[i]).val() + " are not equal!");
-                                  return false;
-                                }                              }
-                        }
-                    }
-                    $.ajax({
-                      type: "POST",
-                      url: '{% url "create_template" %}',
-                      data: $(this).serialize(),
-                       beforeSend: function(xhr, options){
-                           if(!$("#tsid").val()){
-                               alert("Service can't be blank!");
-                               xhr.abort();
-                           }
-                            if(!$("#template_date").val()){
-                               alert("Date can't be blank!");
-                               xhr.abort();
-                           }
-                       },
-                      success: function(data){
-                       $("#template-alert").empty().append(data["info"]);
-                       if(data["msg"] == "error"){
-                           $("#template-alert").removeClass().addClass("alert alert-error alert-dismissible");
-                       }else{
-                           $("#template-alert").removeClass().addClass("alert alert-success alert-dismissible");
-                       }
-                       $("#template-alert").css("visibility", "visible");
-                      },
-                      error: function(){
-                       $("#template-alert").empty().append(data["info"]);
-                       $("#template-alert").removeClass().addClass("alert alert-error alert-dismissible");
-                       $("#template-alert").css("visibility", "visible");
-                      }
-                    });
-            });
-
-
-             var $tempid = $('#tempid');
-                $tempid.find('option').remove();
-                $.getJSON('{% url "template_list" %}', function(data){
-                    $.each(data,function(key, value)
-                    {
-                        $tempid.append('<option value=' + key + '>' + value + '</option>');
-                    });
-                });
-
-            console.log("ready")
-        });
-
-        function selectService(service){
-            $("#tsid").val(service);
-             $('#serviceModal').modal('toggle');
-        }
-
-    </script>
 {% endblock end %}

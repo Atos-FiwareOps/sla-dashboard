@@ -1,222 +1,220 @@
-	<div class="span3">
-		<h3 style="color: #0088cc;">
-			Agreement status
-		</h3>
-		<div id="filter">
-			<form method="GET">
+		<div class="span3">
+			<h3 style="color: #0088cc;">
+				Agreement status
+			</h3>
+			<div id="filter">
+				<form method="GET">
+					
+					{#{% csrf_token %}#}
+					{% for field in form %}
+						{% if field.html_name not in form.exclude %}
+					
+					<div class="control-group">
+						<label for="{{field.id_for_label}}" class="control-label">{{field.label}}:</label>
+						<div class="controls">
+							{{ field }}
+						</div>
+					</div>
+					
+						{% endif %}
+					{% endfor %}
+					
+					<div class="control-group">
+						<div class="controls">
+							<button type="submit" class="btn">Submit</button>
+						</div>
+					</div>
+				</form>
+			</div>
+		<!-- -->  
+	
+			{%if show_form == True%}
+				<div class="checkbox">
+					<label>
+						<input id="show-agreement" type="checkbox">Create Agreement
+					</label>
+				</div>
+			{%endif%}
+		</div>
+	
+	{% load sla_filter %}
+	
+		<div class="span10">
+			<h3 style="color: #0088cc;" class="txt-gradient">Monitoring Agreements</h3>
+			<div id="agreements">
+	
+				<table class="table">
+					<tr>
+						<th>Status</th>
+						<th>Actions</th>
+						<th>Agreement Name</th>
+						<th>Template Name</th>
+						<th>{%if show_form == True%}Provider{%else%}Consumer{%endif%}</th>
+						<th>Service</th>
+					</tr>
+					
+					<tbody>
+						{% for a in agreements %}
+						
+						<tr class="{{a.statusclass}}">
+							<td>
+								<span class="status-{{a.statusclass}}"></span>
+							</td>
+							
+							<td>
+								<a href="#agreement-{{a.agreement_id|removeChars:".,:"}}"
+									data-toggle="collapse"
+									data-parent="#agreements"
+									class="">
+									<span class="icon icon-plus" title="Expand/Collapse"></span>
+								</a>
+		
+								<a href="{% url 'agreement_details' a.agreement_id %}">
+									<span title="Agreement info" class="icon icon-info-sign"></span>
+								</a>
+							</td>
+							
+							<td>
+								<span>{{ a.name }}</span>
+							</td>
+		
+							<td>
+								<span>{{ a.t_name }}</span>
+							</td>
+		
+							<td>
+								<span>{%if show_form == False%}{{a.context.consumer}}{%else%}{{a.context.provider}}{%endif%}</span>
+							</td>
+							
+							<td>
+								<span>{{a.context.service}}</span>
+								<div id="agreement-{{a.agreement_id|removeChars:".,:"}}" class="collapse">
+									<ul>
+									{% for tname,t in a.guaranteeterms.items %}
+		
+										<li>
+											<span class="status-{{t.statusclass}}"></span>
+											{{t.servicelevelobjective.kpiname}}
+											
+											{% if t.status == "VIOLATED" %}
+											
+											-
+											<a href="{%url 'agreement_term_violations' a.agreement_id t.name%}">Violations</a>
+											
+											{% endif %}
+										</li>
+									{% endfor %}
+									</ul>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+					
+					{% empty %}
+					{% endfor %}
+					
+				</table>
+			</div>
+		
+			{% if success %}
+			<div class="alert alert-{{ success }}">
+				<button type="button" class="close" data-dismiss="alert">&times;</button>
+		
+				{% if message %}
+					{{ message }}
+				{% else %}
+					Agreement is created successfully!
+				{% endif %}
+			</div>
+			{% endif %}
+		
+			{%if show_form == True%}
+			<!-- Modal -->
+			<div id="serviceModalAgreement" name="serviceModalAgreement" class="modal hide" tabindex="-1" role="dialog">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+					<h3 style="color: #5bc0de">List of Services</h3>
+				</div>
 				
-				{#{% csrf_token %}#}
-				{% for field in form %}
-					{% if field.html_name not in form.exclude %}
-				
-				<div class="control-group">
-					<label for="{{field.id_for_label}}" class="control-label">{{field.label}}:</label>
-					<div class="controls">
-						{{ field }}
+				<div class="modal-body">
+					<div class="control-group">
+						<div>
+							<h4 style="color: #5bc0de">Paas Services</h4>
+						</div>
+						
+						{% if paas %}
+							{% for p in paas %}
+						
+						<div class="control-group">
+							<span><a href="#" onclick="selectService('host|{{ p.region }}:{{ p.node }}');">{{ p.name }}, {{ p.region }} (host|{{ p.region }}:{{ p.node }})</a> </span>
+						</div>
+						
+							{% endfor %}
+						{% else %}
+						
+						<span>{{ paas_err }}</span>
+		
+						{% endif %}
+					
+					</div>
+		
+					<div class="control-group">
+						<div>
+							<h4 style="color: #5bc0de">Saas Services</h4>
+						</div>
+		
+						{% if saas %}
+							{% for s in saas %}
+						
+						<div class="control-group">
+							<span><a href="#" onclick="selectService('vm|{{ s.node }}:{{ s.uuid }}');">{{ s.name }}, {{ s.node }} (vm|{{ s.node }}:{{ s.uuid }})</a> </span>
+						</div>
+							
+							{% endfor %}
+						{% else %}
+		
+							<span>{{ saas_err }}</span>
+						
+						{% endif %}
+						
 					</div>
 				</div>
 				
-					{% endif %}
-				{% endfor %}
+				<div class="modal-footer">
+					<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
+				</div>
 				
-				<div class="control-group">
-					<div class="controls">
-						<button type="submit" class="btn">Submit</button>
+			</div>
+			
+			<form method="post" id="create-agreement-form" class="well" style="visibility: hidden">
+				{% csrf_token %}
+				<div id="guaranteesRows">
+					<input type="hidden" name="grRowNum" id="grRowNum" value="">
+					<div id="guarantees" class="control-group">
+						<div class="control-group">
+							<span class="label label-info" style="width: 150px">Agreement Name:</span>
+						<input type="text" name="aname" id="aname" class="form-control" style="margin-left: 20px; width: 350px;"/>
+						</div>
+						
+						<div class="control-group">
+							<span class="label label-info" style="width: 150px">Service Id:</span>
+							<input id="tsid" name="tsid" class="form-control" style="margin-left: 20px; width: 350px;" readonly="readonly"/>
+							<a href="#serviceModalAgreement" data-toggle="modal">Show Services</a>
+						</div>
+						
+						<div class="control-group">
+							<span class="label label-info" style="width: 150px">Template Id:</span>
+							<select id="tempid" name="tempid" class="form-control" style="margin-left: 20px"></select>
+						</div>
+						
+						<div class="control-group" id="metric-list">
+						</div>
+		
+						<div class="control-group">
+							<input type="submit" class="btn" style="margin-top: 10px"/>
+						</div>
 					</div>
 				</div>
 			</form>
-		</div>
-	<!-- -->  
-
-		{%if show_form == True%}
-			<div class="checkbox">
-				<label>
-					<input id="show-agreement" type="checkbox">Create Agreement
-				</label>
-			</div>
-		{%endif%}
-	</div>
-
-{% load sla_filter %}
-
-	<div class="span10">
-		<h3 style="color: #0088cc;" class="txt-gradient">Monitoring Agreements</h3>
-		<div id="agreements">
-
-			<table class="table">
-				<tr>
-					<th>Status</th>
-					<th>Actions</th>
-					<th>Agreement Name</th>
-					<th>Template Name</th>
-					<th>{%if show_form == True%}Provider{%else%}Consumer{%endif%}</th>
-					<th>Service</th>
-				</tr>
-				
-				<tbody>
-					{% for a in agreements %}
-					
-					<tr class="{{a.statusclass}}">
-						<td>
-							<span class="status-{{a.statusclass}}"></span>
-						</td>
-						
-						<td>
-							<a href="#agreement-{{a.agreement_id|removeChars:".,:"}}"
-								data-toggle="collapse"
-								data-parent="#agreements"
-								class="">
-								<span class="icon icon-plus" title="Expand/Collapse"></span>
-							</a>
-	
-							<a href="{% url 'agreement_details' a.agreement_id %}">
-								<span title="Agreement info" class="icon icon-info-sign"></span>
-							</a>
-						</td>
-						
-						<td>
-							<span>{{ a.name }}</span>
-						</td>
-	
-						<td>
-							<span>{{ a.t_name }}</span>
-						</td>
-	
-						<td>
-							<span>{%if show_form == False%}{{a.context.consumer}}{%else%}{{a.context.provider}}{%endif%}</span>
-						</td>
-						
-						<td>
-							<span>{{a.context.service}}</span>
-							<div id="agreement-{{a.agreement_id|removeChars:".,:"}}" class="collapse">
-								<ul>
-								{% for tname,t in a.guaranteeterms.items %}
-	
-									<li>
-										<span class="status-{{t.statusclass}}"></span>
-										{{t.servicelevelobjective.kpiname}}
-										
-										{% if t.status == "VIOLATED" %}
-										
-										-
-										<a href="{%url 'agreement_term_violations' a.agreement_id t.name%}">Violations</a>
-										
-										{% endif %}
-									</li>
-								{% endfor %}
-								</ul>
-							</div>
-						</td>
-					</tr>
-				</tbody>
-				
-				{% empty %}
-				{% endfor %}
-				
-			</table>
-		</div>
-	
-		{% if success %}
-		<div class="alert alert-{{ success }}">
-			<button type="button" class="close" data-dismiss="alert">&times;</button>
-	
-			{% if message %}
-				{{ message }}
-			{% else %}
-				Agreement is created successfully!
 			{% endif %}
 		</div>
-		{% endif %}
-	
-		{%if show_form == True%}
-		<!-- Modal -->
-		<div id="serviceModalAgreement" name="serviceModalAgreement" class="modal hide" tabindex="-1" role="dialog">
-			<div class="modal-header">
-				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-				<h3 style="color: #5bc0de">List of Services</h3>
-			</div>
-			
-			<div class="modal-body">
-				<div class="control-group">
-					<div>
-						<h4 style="color: #5bc0de">Paas Services</h4>
-					</div>
-					
-					{% if paas %}
-						{% for p in paas %}
-					
-					<div class="control-group">
-						<span><a href="#" onclick="selectService('host|{{ p.region }}:{{ p.node }}');">{{ p.name }}, {{ p.region }} (host|{{ p.region }}:{{ p.node }})</a> </span>
-					</div>
-					
-						{% endfor %}
-					{% else %}
-					
-					<span>{{ paas_err }}</span>
-	
-					{% endif %}
-				
-				</div>
-	
-				<div class="control-group">
-					<div>
-						<h4 style="color: #5bc0de">Saas Services</h4>
-					</div>
-	
-					{% if saas %}
-						{% for s in saas %}
-					
-					<div class="control-group">
-						<span><a href="#" onclick="selectService('vm|{{ s.node }}:{{ s.uuid }}');">{{ s.name }}, {{ s.node }} (vm|{{ s.node }}:{{ s.uuid }})</a> </span>
-					</div>
-						
-						{% endfor %}
-					{% else %}
-	
-						<span>{{ saas_err }}</span>
-					
-					{% endif %}
-					
-				</div>
-			</div>
-			
-			<div class="modal-footer">
-				<button class="btn" data-dismiss="modal" aria-hidden="true">Close</button>
-			</div>
-			
-		</div>
-		
-		<form method="post" id="create-agreement-form" class="well" style="visibility: hidden">
-			{% csrf_token %}
-			<div id="guaranteesRows">
-				<input type="hidden" name="grRowNum" id="grRowNum" value="">
-				<div id="guarantees" class="control-group">
-					<div class="control-group">
-						<span class="label label-info" style="width: 150px">Agreement Name:</span>
-					<input type="text" name="aname" id="aname" class="form-control" style="margin-left: 20px; width: 350px;"/>
-					</div>
-					
-					<div class="control-group">
-						<span class="label label-info" style="width: 150px">Service Id:</span>
-						<input id="tsid" name="tsid" class="form-control" style="margin-left: 20px; width: 350px;" readonly="readonly"/>
-						<a href="#serviceModalAgreement" data-toggle="modal">Show Services</a>
-					</div>
-					
-					<div class="control-group">
-						<span class="label label-info" style="width: 150px">Template Id:</span>
-						<select id="tempid" name="tempid" class="form-control" style="margin-left: 20px"></select>
-					</div>
-					
-					<div class="control-group" id="metric-list">
-					</div>
-	
-					<div class="control-group">
-						<input type="submit" class="btn" style="margin-top: 10px"/>
-					</div>
-				</div>
-			</div>
-		</form>
-
-		{% endif %}
-		
-	</div>

@@ -1,15 +1,16 @@
 {% extends "index.html" %}
 
 {% block content %}
+		<script>
+			$(document).ready(function() {
+				console.log("violations ready");
+			});
+		</script>
+{% endblock content %}
 
+{% block content %}
 {% include "slagui/violations_template.html" %}
-
 {% endblock content %}
 
 {% block end %}
-    <script>
-        $(document).ready(function() {
-            console.log("violations ready");
-        });
-    </script>
 {% endblock end %}
