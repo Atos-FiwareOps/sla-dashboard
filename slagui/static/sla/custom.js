@@ -2,32 +2,56 @@
 	var maxRowCount = 11;
 	function removeRow (temp) {
 		$('#rowNum'+temp).remove();
+		$('#controlRowNum'+temp).remove();
 		rowNum--;
-		grRemoveRow(grRowNum);
+		grRemoveRow(temp);
 	};
 
 	function addRow() {
 		rowNum ++;
-		if(rowNum <maxRowCount) {
-			var row =
-				'<div class="control-group sla-hform">' +
-					'<div id="rowNum' + rowNum +'"sla class="sla-row" >' +
-						'<div class="sla-label">' +
-							'<label for ="sname'+rowNum+'">Name' + rowNum.toString() + ':</label>' +
-						'</div>' + 
-						'<select id="sname'+rowNum+'" name="sname'+rowNum+'">' +
-							'<option value="percCPULoad">CPULoad</option>' +
-							'<option value="bwd_status">bandwidthStatus</option>' +
-							'<option value="percRAMUsed">RAMUsed</option>' +
-							'<option value="percDiskUsed">DiskUsed</option>' +
-						'</select>' +
-						'<input id="rowBtn'+rowNum+'" onclick="removeRow('+rowNum+');" type="button" value="Remove" class="btn">' +
-					'</div>' +
-				'</div>';
-
-			$('#metrics div:last').before(row);
-		}
-		grAddRow();
+		
+		$.get('monitoring_metrics?service=' + $("#tsid").val(),
+			function (measurements) {
+				
+				if (measurements.length > 0) {
+					if(rowNum < maxRowCount) {
+						var row =
+							'<div id="controlRowNum' + rowNum +'" class="control-group sla-hform">'
+							
+						row +=	'<div id="rowNum' + rowNum +'"sla class="sla-row" >' +
+									'<div class="sla-label">' +
+										'<label for ="sname'+rowNum+'">Name' + rowNum.toString() + ':</label>' +
+									'</div>' + 
+									'<select id="sname'+rowNum+'" name="sname'+rowNum+'">';
+					
+						for	(i = 0; i < measurements.length; i++) {
+							row += 		'<option value="' + measurements[i] + '">' + measurements[i] + '</option>';
+						}
+						
+						row +=
+										'</select>' +
+									'<input id="rowBtn'+rowNum+'" onclick="removeRow('+rowNum+');" type="button" value="Remove" class="btn">' +
+								'</div>' +
+							'</div>';
+						$('#metrics div:last').before(row);
+					}
+					grAddRow(measurements);
+				} else {
+					if (rowNum == 1) {
+						row =	
+							'<div id="rowNum' + rowNum +'"sla class="sla-row" >' +
+								'<p>No monitoring metrics available for ' + $("#tsid").val() + '<p>'
+							'</div>';
+						$('#metrics div:last').before(row);
+					}
+				}
+			}
+		)
+		.fail(
+			function() {
+				alert( "error" );
+			}
+		);
 	}
 
 
@@ -38,22 +62,24 @@
 		grRowNum --;
 	};
 
-	function grAddRow() {
+	function grAddRow(measurements) {
 		grRowNum ++;
 		if(grRowNum <maxGrRowCount) {
 			var row =
-				'<p id="grRowNum' + grRowNum +'" >' +
+				'<div id="grRowNum' + grRowNum +'" >' +
 					'<div class="sla-hform">' +
 						'<div class="sla-row">' +
 							'<div class="sla-label">' +
 								'<label class="col-sm-2 control-label" for="gname'+grRowNum+'" >G.Name' + grRowNum + ':</label>' +
 							'</div>' + 
 							'<div class="col-sm-10">' +
-								'<select class="form-control-static" id="gname'+grRowNum+'" name="gname'+grRowNum+'">' +
-									'<option value="GT_percCPULoad">CPULoad</option>' +
-									'<option value="GT_bwd_status">bandwidthStatus</option>' +
-									'<option value="GT_percRAMUsed">RAMUsed</option>' +
-									'<option value="GT_percDiskUsed">DiskUsed</option>' +
+								'<select class="form-control-static" id="gname'+grRowNum+'" name="gname'+grRowNum+'">';
+			
+			for	(i = 0; i < measurements.length; i++) {
+				row += 				'<option value="' + measurements[i] + '">' + measurements[i] + '</option>';
+			}
+			
+			row +=
 								'</select>' +
 							'</div>' +
 						'</div>' +
@@ -91,9 +117,15 @@
 							'</div>' +
 						'</div>' +
 					'</div>' +
-				'</p>';
+				'</div>';
 
 			$('#guarantees div:last').before(row);
+		}
+	}
+	
+	function removeAllRows () {
+		while (rowNum > 0) {
+			removeRow (rowNum);
 		}
 	}
 

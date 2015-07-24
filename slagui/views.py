@@ -956,6 +956,41 @@ def get_template_paas(request):
 	return p_list
 	#return HttpResponse(json.dumps(p_list), content_type="application/json")
 
+def get_measurements(request):
+	service_param = request.GET.get('service');
+	kind_service = re.search("^(.+)\|.*$", service_param).group(1)
+	service_id = re.search("^.+:(.+)$", service_param).group(1)
+	
+	org_name = str(request.session.get("current_organization")['name'])
+	measurements_cache_id = 'measurements' + service_id 
+	measurements = []
+	if cache.get(measurements_cache_id):
+		measurements = cache.get(measurements_cache_id)
+	else:
+		fm = FMAdapter()
+		if org_name in fm.org_node_list:
+			node = fm.org_node_list[org_name]
+			
+			if kind_service == u"host" :
+				url = fm.dca_request_url.replace('NODE', node) + "/"+ service_id
+				credentials = None
+				info = fm.do_fm_request( url, credentials, True, fm.FM)
+			else:
+				url = fm.vm_request_url.replace('NODE', node) + service_id
+				credentials = None
+				info = fm.do_fm_request( url, credentials, False)
+			
+			if 'measures' in info:
+				for measure_dict in info['measures']:
+					for measure in measure_dict.keys():
+						if 'timestamp' != measure:
+							measurements.append(measure)
+			else:
+				print('No services found for ' + url)
+				
+		cache.set(measurements_cache_id, measurements, 60 * 30)
+	return HttpResponse(json.dumps(measurements), content_type="application/json")
+
 @login_required
 def get_templates(request):
 	org_name = request.GET.get('org', '')

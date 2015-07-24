@@ -32,6 +32,7 @@ class FMAdapter(object):
 	}
 	#http://130.206.84.4:1028/monitoring/regions/Trento/hosts
 	dca_request_url = settings.DCA_NODE_URL
+	vm_request_url = settings.FM_VM_URL
 
 	def __new__(cls):
 		if cls.__instance is None:
