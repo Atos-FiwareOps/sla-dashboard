@@ -414,9 +414,9 @@ def create_agreement(request):
 		for y in range(1, int(rp.get('grRowNum')) + 1):
 			const["constraint"] = rp.get("gname" + str(y)) + " " +rp.get("cons" + str(y)) + " " + rp.get("consval" + str(y))
 			
-			policy_obj = re.search("^.*(\d+).*$", rp.get("polval" + str(y)))
+			policy_obj = re.search("^.+ (\d+) .+$", rp.get("polval" + str(y)))
 			if policy_obj:
-				const["policy"] = int(policy_obj.group(1))
+				const["policy"] = "(1 breach, " + policy_obj.group(1) + " hours)"
 			
 			gr = {
 				"name": rp.get('gname' + str(y)),
@@ -511,7 +511,7 @@ def create_template(request):
 			const["constraint"] = rp.get("gname" + str(y)) + " " + rp.get("cons" + str(y)) + " " + rp.get("consval" + str(y))
 			
 			if int(rp.get("polval" + str(y))) > 0:
-				const["policy"] = int(rp.get("polval" + str(y)))
+				const["policy"] = "(1 breach, " + rp.get("polval" + str(y)) + " hours)"
 				
 			gr = {
 				"name": rp.get('gname' + str(y)),
@@ -1154,7 +1154,10 @@ def template_constraints(request, template_id):
 					}
 				
 				if "policy" in te["serviceLevelObjetive"]["kpitarget"]["customServiceLevel"]:
-					te_item["policy"] = json.loads(te["serviceLevelObjetive"]["kpitarget"]["customServiceLevel"])["policy"]
+					policy_value = json.loads(te["serviceLevelObjetive"]["kpitarget"]["customServiceLevel"])["policy"];
+					policy_obj = re.search("^.+breach, (\d+).+$", policy_value)
+					interval = policy_obj.group(1)
+					te_item["policy"] = interval
 				else:
 					te_item["policy"] = ""
 				
