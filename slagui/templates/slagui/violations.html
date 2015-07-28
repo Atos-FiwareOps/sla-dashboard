@@ -1,12 +1,12 @@
 {% extends "index.html" %}
 
-{% block content %}
+{% block head %}
 		<script>
 			$(document).ready(function() {
 				console.log("violations ready");
 			});
 		</script>
-{% endblock content %}
+{% endblock head %}
 
 {% block content %}
 {% include "slagui/violations_template.html" %}
