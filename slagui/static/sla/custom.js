@@ -25,7 +25,7 @@
 									'<select id="sname'+rowNum+'" name="sname'+rowNum+'">';
 					
 						for	(i = 0; i < measurements.length; i++) {
-							row += 		'<option value="' + measurements[i] + '">' + measurements[i] + '</option>';
+							row += 		'<option value="' + measurements[i][0] + '">' + measurements[i][1] + '</option>';
 						}
 						
 						row +=
@@ -76,7 +76,7 @@
 								'<select class="form-control-static" id="gname'+grRowNum+'" name="gname'+grRowNum+'">';
 			
 			for	(i = 0; i < measurements.length; i++) {
-				row += 				'<option value="' + measurements[i] + '">' + measurements[i] + '</option>';
+				row += 				'<option value="' + measurements[i][0] + '">' + measurements[i][1] + '</option>';
 			}
 			
 			row +=

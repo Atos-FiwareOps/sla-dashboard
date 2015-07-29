@@ -2,7 +2,7 @@
 			<h3 style="color: #0088cc;">
 				Violations
 			</h3>
-		
+		{% load sla_filter %}
 			<div id="context">
 				<dl class="dl-horizontal">
 					{# Sanity default: if dd is empty, the values are permutated #}
@@ -11,7 +11,7 @@
 					<dt style="color: #0088cc;">Service</dt>
 						<dd>{{agreement.context.service|default:"&nbsp;"}}</dd>
 					<dt style="color: #0088cc;">Metric name</dt>
-						<dd>{{guarantee_term.servicelevelobjective.kpiname|default:"&nbsp;"}}</dd>
+						<dd>{{ guarantee_term.servicelevelobjective.kpiname | humanReadableMetric }}</dd>
 					{% with guarantee_term.servicelevelobjective.bounds as bounds %}
 					<dt style="color: #0088cc;">Bounds</dt>
 						<dd>({{bounds.0|default:"&nbsp;"}}, {{bounds.1|default:"&nbsp;"}})</dd>

@@ -7,6 +7,8 @@ import sys
 import unicodedata
 import re
 
+from slaformat import guiformatter
+
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
 from django.shortcuts import render
 from django.conf import settings
@@ -396,11 +398,11 @@ def create_agreement(request):
 	agreement_name = rp.get('aname')
 	if rp.get('grRowNum'):
 		for x in range(1, int(rp.get('grRowNum')) + 1):
-			s = rp.get('sname' + str(x))
+			sname = guiformatter.machineReadableMetric(rp.get('sname' + str(x)))
 			sp = {
-				"name": s,
-				"metric": UtilHelper._metric_type.get(s),
-				"location": UtilHelper._metric_location.get(s)
+				"name": sname,
+				"metric": UtilHelper._metric_type.get(sname),
+				"location": UtilHelper._metric_location.get(sname)
 			}
 			variables.append(sp)
 		variable_set = {"variables": variables}
@@ -412,21 +414,24 @@ def create_agreement(request):
 		s_properties.append(inners_properties)
 		const = {}
 		for y in range(1, int(rp.get('grRowNum')) + 1):
-			const["constraint"] = rp.get("gname" + str(y)) + " " +rp.get("cons" + str(y)) + " " + rp.get("consval" + str(y))
+			gname = guiformatter.machineReadableMetric(rp.get("gname" + str(y)))
+			const["constraint"] = (gname + " " +
+								   rp.get("cons" + str(y)) + " " +
+								   rp.get("consval" + str(y)))
 			
-			policy_obj = re.search("^.+ (\d+) .+$", rp.get("polval" + str(y)))
+			policy_obj = rp.get("polval" + str(y))
 			if policy_obj:
-				const["policy"] = "(1 breach, " + policy_obj.group(1) + " hours)"
+				const["policy"] = "(1 breach, " + guiformatter.getIntervalFromPolicy(policy_obj) + " hours)"
 			
 			gr = {
-				"name": rp.get('gname' + str(y)),
+				"name": gname,
 				"serviceScope": {
 					"serviceName": str(template["context"]["service"]),
 					"value": str(template["context"]["service"]),
 				},
 				"serviceLevelObjetive": {
 					"kpitarget": {
-						"kpiName": rp.get('gname' + str(y)),
+						"kpiName": gname,
 						"customServiceLevel": json.dumps(const)
 					}
 				}
@@ -984,12 +989,16 @@ def get_measurements(request):
 				for measure_dict in info['measures']:
 					for measure in measure_dict.keys():
 						if 'timestamp' != measure:
-							measurements.append(measure)
+							measurements.append((measure, guiformatter.humanReadableMetric(measure, True)))
+				orderMeasurementsPerName(measurements)
 			else:
 				print('No services found for ' + url)
 				
 		cache.set(measurements_cache_id, measurements, 60 * 30)
 	return HttpResponse(json.dumps(measurements), content_type="application/json")
+
+def orderMeasurementsPerName(measurements):
+	return measurements.sort(key=lambda name: name[1].lower())
 
 @login_required
 def get_templates(request):
@@ -1108,9 +1117,10 @@ def template_details(request, template_id):
 	if t:
 		te_list = []
 		for index, te in enumerate(t["terms"]["allTerms"]["guaranteeTerms"]):
+			
 			te_item = {
 				"name": t["terms"]["allTerms"]["serviceProperties"][0]["variableSet"]["variables"][index]["name"],
-				"kpiName": te["serviceLevelObjetive"]["kpitarget"]["kpiName"],
+				"kpiName": t["terms"]["allTerms"]["serviceProperties"][0]["variableSet"]["variables"][index]["name"],
 				"constraint": json.loads(te["serviceLevelObjetive"]["kpitarget"]["customServiceLevel"])["constraint"]
 			}
 			
@@ -1142,6 +1152,8 @@ def template_constraints(request, template_id):
 		try:
 			for index, te in enumerate(t["terms"]["allTerms"]["guaranteeTerms"]):
 				cns = json.loads(te["serviceLevelObjetive"]["kpitarget"]["customServiceLevel"])["constraint"].split(" ")
+				cns_name = t["terms"]["allTerms"]["serviceProperties"][0]["variableSet"]["variables"][index]["name"]
+				kpiName = te["serviceLevelObjetive"]["kpitarget"]["kpiName"]
 				te_item = {
 					"t_name": t["name"],
 					"t_time": t["context"]["expirationTime"],
@@ -1149,15 +1161,13 @@ def template_constraints(request, template_id):
 					"provider": t["context"]["agreementInitiator"],
 					"cns": cns[1],
 					"cns_val": cns[2],
-					"cns_name": t["terms"]["allTerms"]["serviceProperties"][0]["variableSet"]["variables"][index]["name"],
-					"kpiName": te["serviceLevelObjetive"]["kpitarget"]["kpiName"]
+					"cns_name": guiformatter.humanReadableMetric(cns_name),
+					"kpiName": guiformatter.humanReadableMetric(kpiName, True)
 					}
 				
 				if "policy" in te["serviceLevelObjetive"]["kpitarget"]["customServiceLevel"]:
-					policy_value = json.loads(te["serviceLevelObjetive"]["kpitarget"]["customServiceLevel"])["policy"];
-					policy_obj = re.search("^.+breach, (\d+).+$", policy_value)
-					interval = policy_obj.group(1)
-					te_item["policy"] = interval
+					policyValue = json.loads(te["serviceLevelObjetive"]["kpitarget"]["customServiceLevel"])["policy"];
+					te_item["policy"] = guiformatter.getIntervalFromPolicy(policyValue)
 				else:
 					te_item["policy"] = ""
 				

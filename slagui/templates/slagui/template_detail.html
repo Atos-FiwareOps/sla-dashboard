@@ -86,7 +86,7 @@
 					<dt style="color: #0088cc;">Provider</dt>
 						<dd>{{context.agreementInitiator|default:"&nbsp;"}}</dd>
 				</dl>
-				
+				{% load sla_filter %}
 				<div class="span8">
 					<h3 style="color: #0088cc;">Service Properties</h3>
 					<div id="properties_summary">
@@ -102,14 +102,14 @@
 							{% for t in te_list %}
 							<tr class="{{t.statusclass}}">
 								<td>{{forloop.counter}}</td>
-								<td>{{ t.name }}</td>
-								<td>{{ t.kpiName}}</td>
-								<td>{{ t.constraint }}</td>
+								<td>{{ t.name | humanReadableMetric }}</td>
+								<td>{{ t.kpiName | humanReadableMetric:"True"}}</td>
+								<td>{{ t.constraint | formatConstraint }}</td>
 								
 								{% if t.policy == "" %}
 								<td>Real time</td>
 								{% else %}
-								<td>{{ t.policy }}</td>
+								<td>Over {{ t.policy | getIntervalFromPolicy }} hours</td>
 								{% endif %}
 							</tr>
 							{% empty %}

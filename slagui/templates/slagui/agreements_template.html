@@ -94,7 +94,7 @@
 		
 										<li>
 											<span class="status-{{t.statusclass}}"></span>
-											{{t.servicelevelobjective.kpiname}}
+											{{t.servicelevelobjective.kpiname | humanReadableMetric}}
 											
 											{% if t.status == "VIOLATED" %}
 											
