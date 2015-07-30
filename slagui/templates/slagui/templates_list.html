@@ -65,7 +65,11 @@
 							{% endfor %}
 							
 						{% else %}
+						
+							{% if t_paas_err %}
 					<span>Error: {{ t_paas_err }}</span>
+							{% endif %}
+		
 						{% endif %}
 						
 					{% endif %}
@@ -76,7 +80,7 @@
 					</div>
 					
 					{% if saas %}
-					
+						
 						{% for s in saas %}
 					<div class="control-group">
 						<span><a href="#" onclick="selectService('vm|{{ s.node }}:{{ s.uuid }}');">{{ s.name }}, {{ s.node }} (vm|{{ s.node }}:{{ s.uuid }})</a> </span>
@@ -84,7 +88,9 @@
 						{% endfor %}
 					
 					{% else %}
+						{% if t_saas_err %}
 					<span>Error: {{ t_saas_err }}</span>
+						{% endif %}
 					{% endif %}
 				</div>
 				

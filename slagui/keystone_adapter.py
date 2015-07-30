@@ -6,17 +6,9 @@ import socket
 import urllib2
 import sys
 from django.conf import settings
-import unicodedata
 
 class KeyStoneAdapter(object):
-	
-	#This values have been moved to the setting configuration.
-	#URL_KEYSTONE = "http://cloud.lab.fi-ware.org:4730"
-	#URL_TOKEN = "/v3/auth/tokens"
-	#URL_USER = "/v3/users/"
-	#BODY_KEYSTONE = "{\"auth\": {\"identity\": { \"methods\": [ \"oauth2\" ], \"oauth2\": {\"access_token_id\":\"ACCESS_TOKEN_VALUE\"}}}}"
 	__timeout_value = 4
-	
 	
 	def __init__(self):
 		pass

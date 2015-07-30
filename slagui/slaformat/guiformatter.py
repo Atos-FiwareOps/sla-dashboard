@@ -1,5 +1,11 @@
 import re
 
+def paramunparse(params):
+	result = ""
+	for k, v in params.iteritems():
+		result += k + "=" + v + "&"
+	return result.rstrip('&')
+
 def humanReadableMetric(measureUnit, showUnits=False):
 	units = ""
 	if showUnits:

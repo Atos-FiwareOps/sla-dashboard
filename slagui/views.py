@@ -45,12 +45,6 @@ factory = restclient.Factory(settings.SLA_MANAGER_URL)
 consumer = oauth.Consumer(settings.SECRET_TOKEN, settings.SECRET_KEY)
 client = oauth.Client(consumer)
 
-def paramunparse(params):
-	result = ""
-	for k, v in params.iteritems():
-		result += k + "=" + v + "&"
-	return result.rstrip('&')
-
 def callbackIdm(request):
 
 	state = request.REQUEST['state']
@@ -91,9 +85,9 @@ def callbackIdm(request):
 		try:
 			keyStoneAdapter = KeyStoneAdapter()
 			actorId = keyStoneAdapter.get_actorId(json_token ["access_token"], user.username)
-		except:
-			print(sys.exc_info()[0])
+		except Exception, e:
 			print ('Error occurred while collecting the ActorId, the system assign the default value for the ActorId')
+			print(e)
 			actorId = "0000000000000000000000000000000"		
 		
 		user_org = {
@@ -108,8 +102,9 @@ def callbackIdm(request):
 			org["real_org"] = True
 		user.organizations.append(user_org)
 		request.session["user_organizations"] = user.organizations
-	except:
+	except Exception, e:
 		print("Error details:", sys.exc_info()[0])
+		print(e)
 		context = {
 				'is_error': settings.ERROR_NO_ROLE,
 				'err_msg': 'No valid roles exist for this User..',
@@ -143,7 +138,7 @@ def idm_login(request):
 		'state': settings.IDM_LOGIN_STATE,
 		'redirect_uri': settings.IDM_REDIRECT_URL
 	}
-	query = urlparse.urlunparse((http, host, path, '', paramunparse(params), ''))
+	query = urlparse.urlunparse((http, host, path, '', guiformatter.paramunparse(params), ''))
 	return HttpResponseRedirect(query)
 
 
@@ -346,7 +341,7 @@ def agreements_summary(request, is_provider=False):
 		}
 		return render(request, 'slagui/agreements.html', context)
 	for a in agreements:
-		a.t_name = get_tamplate_name(a.context.template_id)
+		a.t_name = get_template_name(a.context.template_id)
 	success = request.GET.get("success")
 	message = request.GET.get("message")
 	paas = None
@@ -383,7 +378,7 @@ def agreements_summary(request, is_provider=False):
 		context['saas_err'] = saas_err.decode('utf-8', 'ignore')
 	return render(request, 'slagui/agreements.html', context)
 
-def get_tamplate_name(id):
+def get_template_name(id):
 	t = get_template(id)
 	return t["name"]
 
@@ -973,27 +968,25 @@ def get_measurements(request):
 		measurements = cache.get(measurements_cache_id)
 	else:
 		fm = FMAdapter()
-		if org_name in fm.org_node_list:
-			node = fm.org_node_list[org_name]
+		node = re.search("^.+\|(.+):.*$", service_param).group(1)
 			
-			if kind_service == u"host" :
-				url = fm.dca_request_url.replace('NODE', node) + "/"+ service_id
-				credentials = None
-				info = fm.do_fm_request( url, credentials, True, fm.FM)
-			else:
-				url = fm.vm_request_url.replace('NODE', node) + service_id
-				credentials = None
-				info = fm.do_fm_request( url, credentials, False)
+		if kind_service == u"host" :
+			url = fm.dca_request_url.replace('NODE', node) + "/"+ service_id
+		else:
+			url = fm.vm_request_url.replace('NODE', node) + service_id
+		
+		credentials = None
+		info = fm.do_fm_request( url, credentials, True, fm.FM)
 			
-			if 'measures' in info:
-				for measure_dict in info['measures']:
-					for measure in measure_dict.keys():
-						if 'timestamp' != measure:
-							measurements.append((measure, guiformatter.humanReadableMetric(measure, True)))
-				orderMeasurementsPerName(measurements)
-			else:
-				print('No services found for ' + url)
-				
+		if 'measures' in info:
+			for measure_dict in info['measures']:
+				for measure in measure_dict.keys():
+					if measure not in ['timestamp', 'hostName']:
+						measurements.append((measure, guiformatter.humanReadableMetric(measure, True)))
+			orderMeasurementsPerName(measurements)
+		else:
+			print('No services found for ' + url)
+			
 		cache.set(measurements_cache_id, measurements, 60 * 30)
 	return HttpResponse(json.dumps(measurements), content_type="application/json")
 
