@@ -415,7 +415,7 @@ def create_agreement(request):
 								   rp.get("consval" + str(y)))
 			
 			policy_obj = rp.get("polval" + str(y))
-			if policy_obj:
+			if u"Real time" not in policy_obj:
 				const["policy"] = "(1 breach, " + guiformatter.getIntervalFromPolicy(policy_obj) + " hours)"
 			
 			gr = {
