@@ -1,6 +1,4 @@
-This is the README.txt file for sla-dashboard application.
-
-sla-dashboard application is composed by the following directories:
+The sla-dashboard application is composed by the following directories:
 * sladashboard: the app related to the application itself. The settings
     file maybe need to be modified: read below.
 * slagui: the sla dashboard GUI project.
@@ -13,7 +11,7 @@ sla-dashboard application is composed by the following directories:
 
 
 Software requirements
----------------------
+=====================
 Python version: 2.7.x
 
 The required python packages are listed in requirements.txt
@@ -23,37 +21,39 @@ Installing the requirements inside a virtualenv is recommended.
 SLA Manager (java backend) needs to be running in order to use the dashboard.
 
 Installing
-----------
-(to be corrected/completed)
+==========
 
-#
-# Install virtualenv
-#
+
+Install virtualenv
+------------------
+
 $ pip install virtualenv
 
 
-#
-# Create virtualenv 
-# E.g.: VIRTUALENVS_DIR=~/virtualenvs
-#
+
+Create virtualenv 
+-----------------
+
 $ virtualenv $VIRTUALENVS_DIR/sla-dashboard
 
-#
-# Activate virtualenv
-#
+
+Activate virtualenv
+-------------------
+
 $ . $VIRTUALENVS_DIR/sla-dashboard/bin/activate
 or 
 $ . $VIRTUALENVS_DIR/sla-dashboard/Scripts/activate
 
-#
-# Change to application dir and install requirements
-#
+
+Change to application dir and install requirements
+--------------------------------------------------
+
 $ cd $SLA_DASHBOARD
 $ pip install -r requirements.txt
 
-#
-# Create needed tables for sessions, admin, etc
-#
+
+### Create needed tables for sessions, admin, etc
+
 $ ./manage.py syncdb
 
 You must create the superUser in order to manage the users and providers. -->
@@ -63,8 +63,8 @@ You must create the superUser in order to manage the users and providers. -->
 -Email address: xxx
 -Password: xxx
 
-Settings
---------
+### Settings
+
 
 * sladashboard/settings.py:
     - SLA_MANAGER_URL : The URL of the SLA Manager REST interface.
@@ -77,26 +77,27 @@ Settings
 
 Running
 -------
+
 NOTE: this steps are not suitable in production mode.
 
-#
-# Activate virtualenv
-#
+
+### Activate virtualenv
+
 $ . $VIRTUALENVS_DIR/sla-dashboard/bin/activate
 
-#
-# Cd to application dir
-#
+
+### Cd to application dir
+
 $ cd $SLA_DASHBOARD
 
-#
-# Start server listing in port 8000 (change port as desired)
-#
+
+### Start server listing in port 8000 (change port as desired)
+
 $ ./manage.py runserver 0.0.0.0:8000
 
-#
-# Test
-#
+
+### Test
+
 curl http://localhost:8000/slagui
 
 
