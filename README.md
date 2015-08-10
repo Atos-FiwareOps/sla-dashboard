@@ -1,3 +1,5 @@
+# SLA Dashboard
+
 The sla-dashboard application is composed by the following directories:
 * sladashboard: the app related to the application itself. The settings
     file maybe need to be modified: read below.
@@ -10,43 +12,39 @@ The sla-dashboard application is composed by the following directories:
 * bin: some useful scripts
 
 
-Software requirements
-=====================
+# Software requirements
+
 Python version: 2.7.x
 
 The required python packages are listed in requirements.txt
 
 Installing the requirements inside a virtualenv is recommended.
 
-SLA Manager (java backend) needs to be running in order to use the dashboard.
+[SLA Manager](https://github.com/Atos-FiwareOps/sla-framework)
+(java backend) needs to be running in order to use the dashboard.
 
-Installing
-==========
+## Installing
 
 
-Install virtualenv
-------------------
+### Install virtualenv
 
 $ pip install virtualenv
 
 
 
-Create virtualenv 
------------------
+### Create virtualenv
 
 $ virtualenv $VIRTUALENVS_DIR/sla-dashboard
 
 
-Activate virtualenv
--------------------
+### Activate virtualenv
 
 $ . $VIRTUALENVS_DIR/sla-dashboard/bin/activate
 or 
 $ . $VIRTUALENVS_DIR/sla-dashboard/Scripts/activate
 
 
-Change to application dir and install requirements
---------------------------------------------------
+### Change to application dir and install requirements
 
 $ cd $SLA_DASHBOARD
 $ pip install -r requirements.txt
@@ -75,8 +73,7 @@ You must create the superUser in order to manage the users and providers. -->
         in $server:$port/slagui. Change "slagui" with the desired path.
 
 
-Running
--------
+## Running in development mode
 
 NOTE: this steps are not suitable in production mode.
 
@@ -102,8 +99,8 @@ curl http://localhost:8000/slagui
 
 
 
-Configure the users and roles
----------------------------
+## Configure the users and roles
+
 The file initial_data.json has created automatically the groups CONSUMER AND PROVIDER when you have executed "./manage.py syncdb"
 You only need to create the users and the providers associated to the agreements and to assig the correct role (CONSUME and PROVIDER).
 In order to introduce them you have to connect to http://localhost:8000/admin and add the new users (with CONSUME or PROVIDER goups).
