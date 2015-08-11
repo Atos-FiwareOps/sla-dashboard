@@ -1,5 +1,9 @@
 # SLA Dashboard
 
+![slasystem](docs/images/slasystem.png)
+
+# Directory structure
+
 The sla-dashboard application is composed by the following directories:
 * sladashboard: the app related to the application itself. The settings
     file maybe need to be modified: read below.
