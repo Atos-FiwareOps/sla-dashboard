@@ -1,6 +1,42 @@
 # SLA Dashboard
 
-![slasystem](docs/images/slasystem.png)
+The SLA Dashboard is a Django web application that in conjunction with the 
+[Atos SLA Manager Core](https://github.com/Atos-FiwareOps/sla-framework)
+and the Monitoring and Authentication Generic Enablers from
+[FiWare](http://fiware.org/) provides a user interface to manage SLA components
+and their lifecycle.
+
+![slasystem](docs/images/slasystem.png "SLA Manager Architecture inside Fiware")
+
+The SLA Dashboard allows to:
+
+* Create SLA templates for exiting services in Fiware.
+* Create SLA Agreements from defined templates.
+* Check information about an existing SLA template.
+* Check information about an existing SLA agreement.
+* Visualize information about violations and breaches.
+
+All these operations rely tightly on the user credentials and permissions inside
+the Fiware's project. This information is retrieved from the Fiware's
+identity manager.
+
+# User guide
+
+![userguide01](docs/images/userguide01.png "Template list")
+![userguide02](docs/images/userguide02.png "Creating a new template")
+![userguide03](docs/images/userguide03.png "Assigning a service in a new template")
+![userguide04](docs/images/userguide04.png "Assigning business values in a new template")
+![userguide05](docs/images/userguide05.png "Updated template list")
+![userguide06](docs/images/userguide06.png "Template details")
+![userguide07](docs/images/userguide07.png "Agreement list")
+![userguide08](docs/images/userguide08.png "Selecting a service for a new SLA")
+![userguide09](docs/images/userguide09.png "SLA parameters from the selected template")
+![userguide10](docs/images/userguide10.png "Updated agreement list")
+![userguide11](docs/images/userguide11.png "Status update for the new SLA")
+![userguide12](docs/images/userguide12.png "Agreement list with summary")
+![userguide13](docs/images/userguide13.png "Monitoring agreement detail (no violations)")
+![userguide14](docs/images/userguide14.png "Monitoring agreement detail (with violatiosn)")
+![userguide15](docs/images/userguide15.png "Violations detail")
 
 # Directory structure
 
