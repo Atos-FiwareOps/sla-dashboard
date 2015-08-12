@@ -1,14 +1,14 @@
 # SLA Dashboard
 
 * [Introduction](#introduction)
-* [Directory Structure](#directory-structure)
+* [Directory structure](#directory-structure)
 * [Installing](#installing)
 	* [Software Requirements](#software-requirements)
 	* [Installation steps](#installation-steps)
 	* [Configuration](#configuration)
 * [Running](#running)
 	* [Running in development mode](#running-in-development-mode)
-	* [Deploying in a production server](#deploying-in-a-production-server)
+	* [Deploying in production mode](#deploying-in-production-mode)
 * [User guide](#user-guide)
 
 ## Introduction
