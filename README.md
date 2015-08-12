@@ -10,6 +10,8 @@
 	* [Running in development mode](#running-in-development-mode)
 	* [Deploying in production mode](#deploying-in-production-mode)
 * [User guide](#user-guide)
+	* [As a service provider](#as-a-service-provider)
+	* [As an end user](#as-an-end-user)
 
 ## Introduction
 
@@ -335,12 +337,60 @@ and add the new users (with CONSUME or PROVIDER goups).
 
 # User guide
 
+The SLA Dashboard allows to create templates and agreements for all kind of
+components that can be monitored by Fiware's  Federation Monitoring component.
+So the following applies both for services, virtual machines and hosts,
+although, for simplicity, we will refer only as "services".
+
+## As a service provider
+
+When somebody connects to the SLA Dashboard home page, a list of existing
+agreements is shown. From the service provider perspective, this page is only
+informational. The real interest may be managing templates to offer a certain
+quality of service level on the provided resources.
+
+To do that, the "Templates" link should be clicked. Then, the complete list of
+created templates is shown.
+
 ![userguide01](docs/images/userguide01.png "Template list")
+
+To create a new one, the service provider have to click on the "Create
+Template" checkbox. Then, a new panel will be presented, where a template name
+and an expiration date.
+
 ![userguide02](docs/images/userguide02.png "Creating a new template")
+
+By clicking on the "Show services" link, the service provider can check the
+provided services that the template terms can apply to. This information is
+retrieved from the Fiware's DCA component, that given the id of a registered
+user, allows to get the information about its monitored services.
+
 ![userguide03](docs/images/userguide03.png "Assigning a service in a new template")
+
+Once the service provider has selected a service, he can add business values to
+the template by clicking in the "Add properties" button below. This allows to
+define which methics will be monitored, as well as define the different
+guarantee levels for each one. This information is retrieved from the
+Federation Monitoring component which, given a service, provides the list of
+available metrics.
+
+These metrics can be evaluated in real time or over a period (currently we
+provide over 6, 12 and 24 hours).
+
 ![userguide04](docs/images/userguide04.png "Assigning business values in a new template")
+
+Once the new template has been created, the list of available templates is
+updated.
+
 ![userguide05](docs/images/userguide05.png "Updated template list")
+
+And by clicking on their names, the service provider can check the details
+of a particular template.
+
 ![userguide06](docs/images/userguide06.png "Template details")
+
+## As an end user
+
 ![userguide07](docs/images/userguide07.png "Agreement list")
 ![userguide08](docs/images/userguide08.png "Selecting a service for a new SLA")
 ![userguide09](docs/images/userguide09.png "SLA parameters from the selected template")
