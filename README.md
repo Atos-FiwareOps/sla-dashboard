@@ -391,13 +391,60 @@ of a particular template.
 
 ## As an end user
 
+An end user, when connecting to the SLA Dashboard home page, will be provided
+with a list of his active service level agreements.
+
 ![userguide07](docs/images/userguide07.png "Agreement list")
+
+The process to create a new agreement, begins when checking the "Create
+agreement" checkbox. Then, a new form is shown, where the end user can set a
+name for the new agreement.
+
+Then, clicking on the "Show services" link, a new window appears, where all the
+services the user is registered in are shown.
+
 ![userguide08](docs/images/userguide08.png "Selecting a service for a new SLA")
+
+After selecting a service, the SLA Dashboard retrieves all the SLA templates
+offered for that service, and shows them in a list, so the user can choose
+which to apply.
+
+When clicking on one of the available templates, all the information about it
+is shown, so the end user can check the business values before creating the
+agreement.
+
 ![userguide09](docs/images/userguide09.png "SLA parameters from the selected template")
+
+Once the agreement is created, the list of agreements is updated...
+
 ![userguide10](docs/images/userguide10.png "Updated agreement list")
+
+... and after a few minutes, the SLA Manager core begins to retrieve metrics 
+and evaluate the new agreement, which state is shown in the SLA Dashboard.
+
 ![userguide11](docs/images/userguide11.png "Status update for the new SLA")
+
+In the list of agreements the "+" button shows a brief summary of what is
+monitored in the agreement, and the status in terms of fulfillment.
+
 ![userguide12](docs/images/userguide12.png "Agreement list with summary")
+
+When clicking in the "i" icon, a more detailed information page is shown. In
+that view, all the agreement information is shown, as well as a summary of
+the violations that have been raised.
+
 ![userguide13](docs/images/userguide13.png "Monitoring agreement detail (no violations)")
+
+Moreover, a pie chart is shown when there are violations, classified by the
+violated guarantee term.
+
 ![userguide14](docs/images/userguide14.png "Monitoring agreement detail (with violatiosn)")
+
+Back in the home page, when the end user clicks is cheking one of the agreement
+summaries and one of the guarantee terms has been violated, a "Violations" link
+is shown next to it. When clicking on this link, a new page is shown, where the
+details of the violations for this business value are shown. For example, the
+date and the actual monitoring value are shown for every raised violation.
+
 ![userguide15](docs/images/userguide15.png "Violations detail")
 
