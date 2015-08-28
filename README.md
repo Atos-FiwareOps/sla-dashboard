@@ -1,8 +1,22 @@
 # SLA Dashboard
 
+The SLA Dashboard provides a web user interface to manage SLAs for several
+FIWARE components. This project is part of [FIWARE](http://www.fiware.org/).
+
+It is a Django frontend application that allows to manage the whole SLA 
+lifecycle. It works in conjunction with the
+[Atos SLA Manager Core](https://github.com/Atos-FiwareOps/sla-framework) 
+that acts as the backend. To get information about users and components it
+interacts with the Monitoring and Authentication Generic Enablers from
+[FiWare](http://fiware.org/).
+
+For any feedbacks or bug reports, please use the the github issues tool.
+
+# Table of contents
+
 * [Introduction](#introduction)
 * [Directory structure](#directory-structure)
-* [Installing](#installing)
+* [Installation](#installation)
 	* [Software Requirements](#software-requirements)
 	* [Installation steps](#installation-steps)
 	* [Configuration](#configuration)
@@ -12,18 +26,14 @@
 * [User guide](#user-guide)
 	* [As a service provider](#as-a-service-provider)
 	* [As an end user](#as-an-end-user)
+* [License](#license)
+
 
 ## Introduction
 
-The SLA Dashboard is a Django web application that in conjunction with the 
-[Atos SLA Manager Core](https://github.com/Atos-FiwareOps/sla-framework)
-and the Monitoring and Authentication Generic Enablers from
-[FiWare](http://fiware.org/) provides a user interface to manage SLA components
-and their life cycle.
-
-![slasystem](docs/images/slasystem.png "SLA Manager Architecture inside Fiware")
-
-The SLA Dashboard allows to:
+The SLA Dashboard allows to perform the actions exposed by the 
+[Atos SLA Manager Core](https://github.com/Atos-FiwareOps/sla-framework) in a
+graphical way, so the user can easily:
 
 * Create SLA templates for exiting services in Fiware.
 * Create SLA Agreements from defined templates.
@@ -34,6 +44,11 @@ The SLA Dashboard allows to:
 All these operations rely tightly on the user credentials and permissions inside
 the Fiware's project. This information is retrieved from the Fiware's
 identity manager.
+
+In the following figure the components that intervene in the SLA dashboard 
+operations are depicted.
+
+![slasystem](docs/images/slasystem.png "SLA Manager Architecture inside Fiware")
 
 ## Directory structure
 
@@ -49,7 +64,7 @@ The sla-dashboard application is composed by the following directories:
 * bin: some useful scripts
 
 
-## Installing
+## Installation
 
 ### Software requirements
 
@@ -446,3 +461,6 @@ date and the actual monitoring value are shown for every raised violation.
 
 ![userguide15](docs/images/userguide15.png "Violations detail")
 
+## License
+
+Licensed under the [Apache License, Version 2.0](#http://www.apache.org/licenses/LICENSE-2.0)
