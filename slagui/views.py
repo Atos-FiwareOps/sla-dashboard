@@ -281,7 +281,7 @@ def agreements_summary(request, is_provider=False):
 					c_org = []
 					for r in request.session["current_organization"]["roles"]:
 						c_org.append(r["name"])
-					if request.session["current_organization"]["real_org"] == False:
+					if not request.session["current_organization"]["real_org"]:
 						if Rol.CONSUMER in c_org:
 							show_form = True
 							break
@@ -294,10 +294,7 @@ def agreements_summary(request, is_provider=False):
 			c_org = []
 			for r in request.session["current_organization"]["roles"]:
 				c_org.append(r["name"])
-			if Rol.CONSUMER in c_org:
-				show_form = True
-			else:
-				show_form = False
+			show_form = Rol.CONSUMER in c_org
 	except:
 		success = ""
 	if request.GET.get("org"):
@@ -791,7 +788,7 @@ def is_show_form(request, show_form, user_type):
 			if organization["name"] == request.GET.get("org"):
 				request.session["current_organization"] = None
 				request.session["current_organization"] = organization
-				if request.session["current_organization"]["real_org"] == False:
+				if not request.session["current_organization"]["real_org"]:
 					cur_roles = []
 					for r in request.session["current_organization"]["roles"]:
 						cur_roles.append(r["name"])
@@ -805,15 +802,14 @@ def is_show_form(request, show_form, user_type):
 							break
 	else:
 		roles = request.session["current_organization"]["roles"]
-		if request.session["current_organization"]["real_org"] == True:
+		if request.session["current_organization"]["real_org"]:
 			for r in roles:
 				if user_type in r["name"]:
 					show_form = True
 					break
 		else:
 			for ro in roles:
-				if user_type == ro["name"]:
-					show_form = True
+				show_form = show_form or user_type == ro["name"]
 	return show_form
 
 def get_agreement_paas(cloudId):
@@ -1022,7 +1018,7 @@ def get_templates(request):
 		template_list = json.loads(r.content)
 
 		for item in template_list:
-			if request.session["current_organization"]["real_org"] == False:
+			if not request.session["current_organization"]["real_org"]:
 				a = {
 					"temp_id": item["templateId"],
 					"temp_name": item["name"],
@@ -1042,7 +1038,7 @@ def get_templates(request):
 		show_form = False
 		try:
 			show_form = is_show_form(request, show_form, Rol.PROVIDER)
-			if show_form != True:
+			if not show_form:
 				show_form = is_show_form(request, show_form, Rol.IO)
 			success = request.GET.get("success")
 		except:
