@@ -151,7 +151,7 @@ follow these steps:
 
 1. Activate virtualenv
 
-		$ . $VIRTUALENVS_NAME/sla-dashboard/bin/activate
+		$ . $VIRTUALENVS_NAME/bin/activate
 
 2. Change to the application directory
 
