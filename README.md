@@ -15,6 +15,7 @@ For any feedbacks or bug reports, please use the the github issues tool.
 # Table of contents
 
 * [Introduction](#introduction)
+* [Features implemented](#features-implemented)
 * [Directory structure](#directory-structure)
 * [Installation](#installation)
 	* [Software Requirements](#software-requirements)
@@ -49,6 +50,32 @@ In the following figure the components that intervene in the SLA dashboard
 operations are depicted.
 
 ![slasystem](docs/images/slasystem.png "SLA Manager Architecture inside Fiware")
+
+## Features implemented
+
+This version of the SLA Manager supports the new features offered in the last
+version of the SLA Framework in terms of defining intervals for KPI conditions.
+Thus, when defining the KPIs restrictions for a feature, a new widget will allow
+the service provider to define a range of time. Then, violations for that KPI
+will only be raised when the mean of these measurements over the specified
+interval exceeds the defined threshold.
+
+![userguide12](docs/images/userguide12.png "Agreement list with summary")
+
+In the current state of the tool, we restrict the interval to four values: real
+time, over 6 hours, over 12 hours and over 24 hours. The "real time" option
+implements the previous available operation, where violations were raised (if
+needed) every time the SLA Framework got the information from the Fiware
+Monitoring component.
+
+Another implemented feature is the dynamic retrieval of the monitored data when
+selecting a service. Up to now, when the service provider defined as SLA
+template, the same KPIs were offered to be monitored, for all the services and
+hosts. This could lead to problems when some service do not offer information
+about, for example, RAM usage. Now, when selecting a service in the SLA Template
+creation stage, the SLA Dashboard queries the Monitoring component for the
+available KPIs that can be monitored for that particular service. If this does
+not offer any monitoring data, the service provider gets properly notified.
 
 ## Directory structure
 
