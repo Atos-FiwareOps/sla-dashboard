@@ -60,7 +60,7 @@ the service provider to define a range of time. Then, violations for that KPI
 will only be raised when the mean of these measurements over the specified
 interval exceeds the defined threshold.
 
-![userguide12](docs/images/userguide12.png "Agreement list with summary")
+![userguide12](docs/images/features01.png "Time range widget")
 
 In the current state of the tool, we restrict the interval to four values: real
 time, over 6 hours, over 12 hours and over 24 hours. The "real time" option
