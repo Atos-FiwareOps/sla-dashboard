@@ -24,6 +24,7 @@ For any feedbacks or bug reports, please use the the github issues tool.
 * [Running](#running)
 	* [Running in development mode](#running-in-development-mode)
 	* [Deploying in production mode](#deploying-in-production-mode)
+* [Installation verification](#installation-verification)
 * [User guide](#user-guide)
 	* [As a service provider](#as-a-service-provider)
 	* [As an end user](#as-an-end-user)
@@ -53,12 +54,12 @@ operations are depicted.
 
 ## Features implemented
 
-This version of the SLA Manager supports the new features offered in the last
-version of the SLA Framework in terms of defining intervals for KPI conditions.
-Thus, when defining the KPIs restrictions for a feature, a new widget will allow
-the service provider to define a range of time. Then, violations for that KPI
-will only be raised when the mean of these measurements over the specified
-interval exceeds the defined threshold.
+This version of the SLA Manager (v1.1) supports the new features offered in the
+last version of the SLA Framework in terms of defining intervals for KPI
+conditions. Thus, when defining the KPIs restrictions for a feature, a new
+widget will allow the service provider to define a range of time. Then,
+violations for that KPI will only be raised when the mean of these measurements
+over the specified interval exceeds the defined threshold.
 
 ![userguide12](docs/images/features01.png "Time range widget")
 
@@ -360,9 +361,16 @@ enabled sites and restart Nginx:
 		$ sudo ln -s /etc/nginx/sites-available/slagui /etc/nginx/sites-enabled
 		$ sudo systemctl restart nginx.service 
 
-8. Test it
+## Installation verification
 
-	curl http://localhost/slagui
+To check that everything was correctly installed, run the project in development
+mode, open your browser and go to the following URL:
+
+        http://localhost:8000/slagui
+
+If it redirects you to the FIWARE login page, it is properly configured locally.
+Remember that in order to fully use it the application must be registered in
+FIWARE and you must have permissions to run it.
 
 ## Configure the users and roles
 
