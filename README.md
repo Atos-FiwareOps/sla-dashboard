@@ -1,5 +1,7 @@
 # SLA Dashboard
 
+[![License badge](https://img.shields.io/badge/license-Apache_2.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
+
 The SLA Dashboard provides a web user interface to manage SLAs for several
 FIWARE components. This project is part of [FIWARE](http://www.fiware.org/).
 
